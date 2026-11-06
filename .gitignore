@@ -1,0 +1,4 @@
+source/native/
+source/fm1/app/build/
+__pycache__/
+*.pyc
