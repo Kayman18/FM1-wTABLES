@@ -20,4 +20,18 @@ void pw_env_shapes(pw_env *e,unsigned attack,unsigned decay);
 void pw_env_on(pw_env *e);
 void pw_env_trigger_mode(pw_env *e,unsigned triggered);
 void pw_env_off(pw_env *e);
-float pw_env_tick(pw_env *e);
+/* The per-sample tick is inlined: at eight voices it runs 44,100 times a
+   second per voice, and the call alone cost more than its arithmetic.  The
+   stage transition it reaches a few times per note stays out of line. */
+void pw_env_advance(pw_env *e);
+extern void (* volatile const pw_env_advance_ptr)(pw_env *);
+static inline __attribute__((always_inline)) float pw_env_tick(pw_env *e){
+ if(e->stage==PW_ENV_IDLE||e->stage==PW_ENV_SUSTAIN)return e->level;
+ /* Algebraically the source's offset + coefficient*level. Compensated
+  * increments preserve slow movement near sustain on the float-only FM1. */
+ float step=(e->asymptote-e->level)*e->alpha-e->roundoff;
+ float next=e->level+step;e->roundoff=(next-e->level)-step;e->level=next;
+ int reached=e->asymptote>e->target?next>=e->target:next<=e->target;
+ if(!--e->remaining||reached)pw_env_advance_ptr(e);
+ return e->level;
+}

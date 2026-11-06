@@ -1,9 +1,10 @@
 #include "pw_core.h"
+#include "plat.h"
 /* Keep the 64-bit product separate from sample loads on the JieLi CPU. */
-static __attribute__((noinline)) uint32_t scaled_increment(int32_t increment,int32_t scale){
+static PLAT_HOT __attribute__((noinline)) uint32_t scaled_increment(int32_t increment,int32_t scale){
     return (uint32_t)(((int64_t)increment*(int64_t)scale)>>12);
 }
-int32_t pw_core_tick(pw_core_voice *v,const int16_t *frames,uint32_t frame_count,uint32_t mip_shift){
+PLAT_HOT int32_t pw_core_tick(pw_core_voice *v,const int16_t *frames,uint32_t frame_count,uint32_t mip_shift){
     uint32_t phase,index,next,fraction,length;
     int32_t position,frame,morph,a,b,c,d,first,second;
     if(frame_count<2u || mip_shift>10u)return 0;
@@ -25,7 +26,7 @@ int32_t pw_core_tick(pw_core_voice *v,const int16_t *frames,uint32_t frame_count
     return first*256+(second-first)*morph;
 }
 
-int32_t pw_core_tick_normalized(pw_core_voice *v,const int16_t *frames,uint32_t frame_count,uint32_t mip_shift){
+PLAT_HOT int32_t pw_core_tick_normalized(pw_core_voice *v,const int16_t *frames,uint32_t frame_count,uint32_t mip_shift){
     /* Preserve every legacy sample and its near-endpoint convention. */
     if(frame_count==16u)return pw_core_tick(v,frames,frame_count,mip_shift);
     if(frame_count<2u||frame_count>16u||mip_shift>10u)return 0;

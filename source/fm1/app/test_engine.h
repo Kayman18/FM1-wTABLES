@@ -1,7 +1,12 @@
 #pragma once
 #include <stdint.h>
 #define CORE_MAX_VOICES 8u
+/* CORE_DEFAULT_VOICES is the small render span and the gain-headroom
+   reference, both tuned to four voices; CORE_STARTUP_VOICES is only the voice
+   limit a fresh settings block and the factory presets start with.  They were
+   the same constant while the default was four. */
 #define CORE_DEFAULT_VOICES 4u
+#define CORE_STARTUP_VOICES 8u
 #define CORE_MAX_UNISON 3u
 #include "pw_env.h"
 #include "pw_filter.h"
@@ -64,7 +69,7 @@ unsigned core_primary_count(void);
 
 /* Zero retains the older 1/2/4 enum for existing engine callers. UI uses count. */
 static inline unsigned core_unison_count(const volatile core_settings *c){unsigned legacy=c->unison_mode>2u?2u:c->unison_mode;unsigned n=c->unison_count?c->unison_count:(1u<<legacy);return n>CORE_MAX_UNISON?CORE_MAX_UNISON:n;}
-static inline unsigned core_unison_effective(const volatile core_settings *c){unsigned n=core_unison_count(c),b=c->voice_limit?c->voice_limit:CORE_DEFAULT_VOICES;if(c->unison_count)return n>b?b:n;while(n>b)n>>=1;return n;}
+static inline unsigned core_unison_effective(const volatile core_settings *c){unsigned n=core_unison_count(c),b=c->voice_limit?c->voice_limit:CORE_STARTUP_VOICES;if(c->unison_count)return n>b?b:n;while(n>b)n>>=1;return n;}
 
 unsigned core_bloom_step(void);
 unsigned core_bloom_seed(unsigned index);

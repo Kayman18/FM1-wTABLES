@@ -49,7 +49,10 @@ int main(void){
  assert(PW_PRESET_COUNT==29);
  for(unsigned i=0;i<PW_PRESET_COUNT;i++){
   core_settings c;assert(pw_preset_get(i,&c));assert(c.bank<PW_TABLE_BANKS);
-  assert(c.voice_limit==CORE_DEFAULT_VOICES && CORE_MAX_VOICES==6 && CORE_DEFAULT_VOICES==4 && c.gain_db==0);
+  /* Written for TEST69's six-slot pool with a four-voice default. TEST82 took
+     the pool to eight, and the default now starts there too; the four-voice
+     render span and gain-headroom reference stay CORE_DEFAULT_VOICES. */
+  assert(c.voice_limit==CORE_STARTUP_VOICES && CORE_MAX_VOICES==8 && CORE_DEFAULT_VOICES==4 && CORE_STARTUP_VOICES==8 && c.gain_db==0);
   assert(pw_preset_name(i)[0]&&pw_preset_category(i)[0]);
   assert(core_unison_count(&c)<=CORE_MAX_UNISON);
   hits[c.bank]++;

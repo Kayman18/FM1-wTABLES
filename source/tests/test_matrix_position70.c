@@ -34,7 +34,7 @@ static uint32_t run_case(unsigned count,unsigned dest){
  return hash;
 }
 int main(void){
- assert(CORE_MAX_VOICES==6 && CORE_DEFAULT_VOICES==4 && VOICE_CHUNK==64);
+ assert(CORE_MAX_VOICES==8 && CORE_DEFAULT_VOICES==4 && VOICE_CHUNK==64);
  for(unsigned voices=4;voices<=6;voices+=2){
   uint32_t no=run_case(voices,0),cut=run_case(voices,1),res=run_case(voices,2),wave=run_case(voices,3),base=run_case(voices,4),pitch=run_case(voices,5),depth=run_case(voices,6);
   assert(no!=wave&&no!=base&&cut!=wave&&res!=base);

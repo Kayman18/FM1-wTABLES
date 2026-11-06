@@ -14,7 +14,9 @@ static void render(unsigned blocks) {
  }
 }
 int main(void){
- assert(CORE_MAX_VOICES==6u && CORE_DEFAULT_VOICES==4u && CORE_MAX_UNISON==3u);
+ /* TEST82: the pool is eight; CORE_DEFAULT_VOICES stays the four-voice
+    render span and headroom reference. */
+ assert(CORE_MAX_VOICES==8u && CORE_DEFAULT_VOICES==4u && CORE_MAX_UNISON==3u);
  assert(PW_CLOUD_FLOATS==16744u && PW_CLOUD_FLOATS<PW_DELAY_FRAMES*2u);
  core_init();core_parallel_set(0);
  core_settings s;assert(pw_preset_get(5,&s));

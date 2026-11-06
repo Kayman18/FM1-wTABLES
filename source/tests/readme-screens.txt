@@ -1,6 +1,8 @@
 data data/factory-mips.pwlc 0x97000
 reboot
-wait 1200
+wait 3000
+shot splash.png
+wait 3100
 shot home.png
 tap FX
 wait 1200

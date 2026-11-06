@@ -1,4 +1,5 @@
 #include "pw_env.h"
+#include "plat.h"
 #include "fastmath.h"
 #define RATE 44100.0f
 float pw_env_ms(unsigned stage,unsigned value){
@@ -39,16 +40,11 @@ void pw_env_shapes(pw_env *e,unsigned attack,unsigned decay){e->attack_shape=att
 void pw_env_trigger_mode(pw_env *e,unsigned triggered){e->triggered=triggered?1:0;}
 void pw_env_on(pw_env *e){stage(e,PW_ENV_ATTACK);}
 void pw_env_off(pw_env *e){if(e->stage!=PW_ENV_IDLE)stage(e,PW_ENV_RELEASE);}
-float pw_env_tick(pw_env *e){
- if(e->stage==PW_ENV_IDLE||e->stage==PW_ENV_SUSTAIN)return e->level;
- /* Algebraically the source's offset + coefficient*level. Compensated
-  * increments preserve slow movement near sustain on the float-only FM1. */
- float step=(e->asymptote-e->level)*e->alpha-e->roundoff;
- float next=e->level+step;e->roundoff=(next-e->level)-step;e->level=next;
- int reached=e->asymptote>e->target?next>=e->target:next<=e->target;
- if(!--e->remaining||reached){
-  unsigned old=e->stage;e->level=e->target;
-  stage(e,old==PW_ENV_ATTACK?PW_ENV_DECAY:old==PW_ENV_DECAY?(e->triggered?PW_ENV_RELEASE:PW_ENV_SUSTAIN):PW_ENV_IDLE);
- }
- return e->level;
+/* Reached from the inlined pw_env_tick when a stage ends. */
+void pw_env_advance(pw_env *e){
+ unsigned old=e->stage;e->level=e->target;
+ stage(e,old==PW_ENV_ATTACK?PW_ENV_DECAY:old==PW_ENV_DECAY?(e->triggered?PW_ENV_RELEASE:PW_ENV_SUSTAIN):PW_ENV_IDLE);
 }
+/* A stage change needs the exponential-time tables, so it stays in the flash
+   while the tick that reaches it runs from SRAM: too far for a direct call. */
+void (* volatile const pw_env_advance_ptr)(pw_env *)=pw_env_advance;

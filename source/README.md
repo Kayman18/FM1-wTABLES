@@ -1,3 +1,11 @@
+# FM1 wTABLES RC1 — 0.83.0-rc1
+
+This is the source used for the RC1 firmware. It includes the uploaded TEST83 engine changes and the approved six-second layered-waveform splash, with no release label in the artwork.
+
+Current build instructions: [README-RC1.md](README-RC1.md) and `build-RC1-linux.sh`. Current release details and validation: [repository README](../README.md) and [BUILD-VALIDATION.md](../BUILD-VALIDATION.md). The TEST82/TEST83 notes below are retained as historical context; their older version strings and default-voice descriptions do not override the current RC1 instructions.
+
+---
+
 # FM1 PolyWavetable TEST82 — 8-Voice Dynamic Pool + MIDI Filter CC
 
 TEST82 is an experimental FM1 PolyWavetable build aimed at a **solid 8 physical voices**, not higher headline polyphony.
@@ -19,6 +27,16 @@ This tree is based on the complete editable **TEST74-derived native/two-frame st
 - Velocity scale is cached per voice.
 - Fully dormant slots bypass pan/LFO/filter/oscillator work earlier.
 - Filter reset work is avoided while the filter is already dormant.
+
+## TEST83 changes (this tree)
+
+- Eight voices is now the **default**: a fresh settings block and all 29 factory presets start at `CORE_STARTUP_VOICES` (8). The four-slot render span and the gain-headroom reference stay on `CORE_DEFAULT_VOICES` (4), so selecting fewer voices still costs less and the -6 dB headroom above four voices is unchanged. The unit therefore starts where it used to sit after selecting 8 by hand.
+- Per-block CPU at eight voices is down **11.4%** on a host instruction-count proxy, bit-exactly: the per-sample envelope, filter and filter-mod leaves are inlined, and the oscillator struct copy for the mip crossfade is taken only while a crossfade is running.
+- The voice loop now executes from **executable SRAM** (`.voice_hot`) instead of in place from the flash, as the sibling V-Station firmware does. Placement only, no arithmetic change; 8,720 of the 24,576-byte RAMTEXT window is now used.
+- A latent fault fixed: the build audit's `64-bit multiplies inlined beside loads ... may corrupt a register` note covered `core_render` and `pw_bloom_branch`. Those multiplies are now in `noinline` helpers, the pattern the project already uses in `pw_core.c` and `pw_performance.c`. The audit reads clean.
+- Two bit-exactness gates added to `tests/run82.sh`: a 29-preset render hash and a randomized settings/notes/CC fuzz hash, both pinned to the pre-optimization output.
+
+See `TEST83-CPU-AND-DEFAULT-8.md` for the measurements, the SRAM constraints, what was tried and rejected, and the state of the inherited test chain.
 
 ## MIDI filter controls
 

@@ -1,7 +1,8 @@
 #include "pw_velocity.h"
+#include "plat.h"
 #include "pw_velocity_tables.h"
 /* 0x9d0ef12c: pure velocity gain, before the independent global dB gain. */
-float pw_velocity_gain(unsigned velocity,float amount){
+PLAT_HOT float pw_velocity_gain(unsigned velocity,float amount){
  if(velocity>127)velocity=127;
  if(amount<0.0f)amount=0.0f;if(amount>100.0f)amount=100.0f;
  return 1.0f+((float)velocity*.0078125f-1.0f)*(amount*.01f);

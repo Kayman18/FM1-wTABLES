@@ -131,7 +131,7 @@ static uint32_t voice_worker_jobs;
 /* 44.1 kHz equal temperament, nearest phase increment; old notes unchanged. */
 static const uint32_t INC[128]={796254,843601,893765,946911,1003217,1062871,1126073,1193033,1263974,1339134,1418763,1503127,1592507,1687203,1787529,1893821,2006434,2125742,2252146,2386065,2527948,2678268,2837526,3006254,3185015,3374406,3575058,3787642,4012867,4251485,4504291,4772130,5055896,5356535,5675051,6012507,6370030,6748811,7150117,7575285,8025735,8502970,9008582,9544261,10111792,10713070,11350103,12025015,12740059,13497623,14300233,15150569,16051469,17005939,18017165,19088521,20223584,21426141,22700205,24050030,25480119,26995246,28600467,30301139,32102938,34011878,36034330,38177043,40447168,42852281,45400411,48100060,50960238,53990491,57200933,60602278,64205876,68023757,72068660,76354085,80894335,85704563,90800821,96200119,101920476,107980983,114401866,121204555,128411753,136047513,144137319,152708170,161788671,171409126,181601643,192400238,203840952,215961966,228803732,242409110,256823506,272095026,288274639,305416341,323577341,342818251,363203285,384800477,407681904,431923931,457607465,484818220,513647012,544190053,576549277,610832681,647154683,685636503,726406571,769600953,815363807,863847862,915214929,969636441,1027294024,1088380105,1153098554,1221665363};
 
-static int live(const poly_voice *v){return v->env.stage!=PW_ENV_IDLE||pw_filter_live(&v->filter);}
+static inline __attribute__((always_inline)) int live(const poly_voice *v){return v->env.stage!=PW_ENV_IDLE||pw_filter_live(&v->filter);}
 static void defaults(poly_voice *v){*v=(poly_voice){0};pw_env_init(&v->env);pw_env_init(&v->env2);pw_env_set(&v->env2,(pw_env_params){60,70,64,50});v->geometry=4;v->osc.pitch_scale_q12=4096;v->pan_left=v->pan_right=v->pan_target_left=v->pan_target_right=1.0f;}
 void core_init(void){
  pw_tables_init();
@@ -139,7 +139,7 @@ void core_init(void){
  voice_worker_fault=0;voice_worker_jobs=0;voice_parallel=1;pw_matrix_init(&matrix);matrix_res_base=0;
  ratchet_left=ratchet_interval=ratchet_index=0;ratchet_count=1;ratchet_rng=0x54b10001u;bloom_disabled=0;density_rng=0x57de1234u;for(unsigned i=0;i<VOICES;i++)ratchet_age[i]=0;pw_bloom_init(&bloom);bloom_left=bloom_gate_left=bloom_remainder=bloom_reseed_seen=bloom_restore_seen=0;bloom_running=bloom_gate=0;bloom_index=255;bloom_note=0;bloom_tempo=0;
  st=(core_settings){0,48,0,0,75,{50,60,80,60},{PW_FILTER_OFF,96,0,100},0,{60,70,64,50},0,{40,0,0,0},0,0,{0,0,0,0},PW_LFO_KEEP,0,0};
- voice_headroom=1.0f;st.voice_limit=CORE_DEFAULT_VOICES;st.delay_sync=1;st.delay_division=2;st.sequencer_bpm=120;st.bloom_gate_percent=50;
+ voice_headroom=1.0f;st.voice_limit=CORE_STARTUP_VOICES;st.delay_sync=1;st.delay_division=2;st.sequencer_bpm=120;st.bloom_gate_percent=50;
  pw_delay_init(&delay,delay_memory,PW_DELAY_FRAMES);pw_delay_reset(&delay,11026.0f);delay_active=delay_style_active=0;synth_gain=1.0f;st.gain_db=0;st.delay_return_db= -3;st.delay_style=0;delay_mix=delay_feedback=0.0f;st.delay_time_ms=500;st.delay_feedback=50;st.delay_mix=35;st.delay_spread=0;st.delay_cross=100;st.delay_lowcut_hz=80;st.delay_highcut_hz=8000;
  st.fx_reverb=0;st.reverb_model=3;st.reverb_size=70;st.reverb_damping=50;st.reverb_depth=20;st.reverb_mix=25;st.reverb_time_ms=2000;st.reverb_speed=25;
  st.velocity_amount=100;velocity_depth=100.0f;velocity_blend=0.0f;
@@ -240,7 +240,7 @@ static void retire_group(unsigned port,unsigned channel,unsigned note){
   defaults(&s->main);
  }
 }
-static unsigned voice_budget(void){return st.voice_limit?st.voice_limit:CORE_DEFAULT_VOICES;}
+static unsigned voice_budget(void){return st.voice_limit?st.voice_limit:CORE_STARTUP_VOICES;}
 unsigned core_primary_count(void){unsigned n=0;for(unsigned i=0;i<VOICES;i++)if(live(&slots[i].main))n++;return n;}
 static int retire_one_group(void){
    unsigned victim=VOICES,best_rank=3;float best_quiet=100.0f;uint32_t best_age=0;
@@ -314,9 +314,14 @@ static void ratchet_retrigger(void){
  }
  bloom_gate=1;
 }
+/* felucca-bsp docs/CPU.md: a 32x32->64-bit multiply with a load in flight can
+   leave a register slightly wrong, so the project keeps such multiplies in a
+   helper of their own (as pw_core.c and pw_performance.c already do). These
+   four were still inlined into core_render. */
+static __attribute__((noinline)) uint64_t mul64(uint32_t a,uint32_t b){return (uint64_t)a*b;}
 static void ratchet_schedule(void){
- unsigned start=(uint64_t)ratchet_index*ratchet_interval/ratchet_count;
- unsigned end=(uint64_t)(ratchet_index+1)*ratchet_interval/ratchet_count;
+ unsigned start=mul64(ratchet_index,ratchet_interval)/ratchet_count;
+ unsigned end=mul64(ratchet_index+1u,ratchet_interval)/ratchet_count;
  ratchet_left=end-start;bloom_gate_left=ratchet_left*st.bloom_gate_percent/100u;
 }
 static void bloom_sync(void){
@@ -337,10 +342,10 @@ static void bloom_tick(void){
   if(bloom_tempo!=st.sequencer_bpm){bloom_tempo=st.sequencer_bpm;bloom_remainder=0;}
   bloom_left=pw_bloom_eighth_interval(st.sequencer_bpm,&bloom_remainder);bloom_gate_left=bloom_left*st.bloom_gate_percent/100u;
   unsigned audible=!(bloom_disabled&(1u<<bloom_index));
-  if(st.bloom_density<100){unsigned roll=(uint64_t)pw_bloom_random(&density_rng)*100u>>32;audible=audible&&roll<st.bloom_density;}
+  if(st.bloom_density<100){unsigned roll=(unsigned)(mul64(pw_bloom_random(&density_rng),100u)>>32);audible=audible&&roll<st.bloom_density;}
   if(audible){voice_note_on(BLOOM_PORT,0,bloom_note,100);bloom_gate=1;}
   ratchet_count=audible?ratchet_counts[st.bloom_ratchet]:1;
-  if(ratchet_count>1&&((uint64_t)pw_bloom_random(&ratchet_rng)*100u>>32)>=st.bloom_ratchet_chance)ratchet_count=1;
+  if(ratchet_count>1&&(mul64(pw_bloom_random(&ratchet_rng),100u)>>32)>=st.bloom_ratchet_chance)ratchet_count=1;
   ratchet_index=0;ratchet_interval=bloom_left;ratchet_schedule();
   for(unsigned i=0;i<VOICES;i++){poly_voice *v=&slots[i].main;ratchet_age[i]=matches(v,BLOOM_PORT,0,bloom_note)&&v->held?v->age:0;}
  }else if(ratchet_index+1<ratchet_count&&!ratchet_left){
@@ -434,17 +439,17 @@ unsigned core_voice_mip(unsigned slot){return slot<VOICES&&live(&slots[slot].mai
 unsigned core_note_mip(unsigned port,unsigned channel,unsigned note){for(unsigned i=0;i<VOICES;i++)if(matches(&slots[i].main,port,channel,note))return core_voice_mip(i);return 0;}
 static const int16_t *mip_frames(unsigned mip,const voice_frame *f){return voice_job.tables_busy?0:mip?pw_table_mips[mip-1][f->active_bank]:pw_table_mips[2][f->active_bank];}
 /* Per-voice memoization only: identical inputs retain identical arithmetic. */
-static int32_t voice_increment(poly_voice *v,uint32_t base,int32_t units){
+static PLAT_HOT int32_t voice_increment(poly_voice *v,uint32_t base,int32_t units){
  if(!v->cache_pitch||v->cached_pitch_base!=base||v->cached_pitch_units!=units){v->cached_pitch_increment=pw_performance_increment(base,units);v->cached_pitch_base=base;v->cached_pitch_units=units;v->cache_pitch=1;}
  return v->cached_pitch_increment;
 }
 /* Exact memoization of the float->pitch-unit conversion used by static tuning,
    bend and unison.  Audio-rate pitch modulation still updates every sample. */
-static int32_t voice_pitch_units(poly_voice *v,float cents){
+static __attribute__((always_inline)) inline int32_t voice_pitch_units(poly_voice *v,float cents){
  if(!v->cache_units||v->cached_units_cents!=cents){v->cached_units=pw_performance_units(cents);v->cached_units_cents=cents;v->cache_units=1;}
  return v->cached_units;
 }
-static float voice_tracking(poly_voice *v,const voice_frame *f){
+static __attribute__((always_inline)) inline float voice_tracking(poly_voice *v,const voice_frame *f){
  if(!v->cache_cut||v->cached_cut_v!=f->track_vel_cutoff||v->cached_cut_p!=f->track_pitch_cutoff){v->cached_cut=pw_tracking_cutoff_offset(v->note,v->velocity,f->track_vel_cutoff,f->track_pitch_cutoff);v->cached_cut_v=f->track_vel_cutoff;v->cached_cut_p=f->track_pitch_cutoff;v->cache_cut=1;}return v->cached_cut;
 }
 /* TEST72: the common unscaled oscillator path is specialized here so the
@@ -481,7 +486,7 @@ static __attribute__((always_inline)) inline int32_t wave_tick(poly_voice *v,pw_
   return osc->pitch_scale_q12==4096?wave_tick_unscaled(osc,frames,shift):pw_core_tick(osc,frames,PW_FRAME_COUNT,shift);
  return osc->pitch_scale_q12==4096?wave_tick_unscaled_normalized(osc,frames,shift,voice_job.table_frame_count):pw_core_tick_normalized(osc,frames,voice_job.table_frame_count,shift);
 }
-static int32_t wave_sample(poly_voice *v,const voice_frame *f){
+static PLAT_HOT int32_t wave_sample(poly_voice *v,const voice_frame *f){
  unsigned desired=0;
  if(voice_job.settings.wave_quality){
   if(!v->cache_mip||v->cached_mip_increment!=(uint32_t)v->osc.frequency_increment||v->cached_mip_scale!=v->osc.pitch_scale_q12){v->cached_mip=(uint8_t)pw_mip_select((uint32_t)v->osc.frequency_increment,v->osc.pitch_scale_q12);v->cached_mip_increment=(uint32_t)v->osc.frequency_increment;v->cached_mip_scale=v->osc.pitch_scale_q12;v->cache_mip=1;}
@@ -491,19 +496,23 @@ static int32_t wave_sample(poly_voice *v,const voice_frame *f){
  if(voice_job.settings.wave_quality&&!desired)desired=1;
  if(!v->mip_ready){v->mip_from=v->mip_to=(uint8_t)desired;v->mip_ready=1;}
  if(!v->mip_fade&&desired!=v->mip_from){v->mip_to=(uint8_t)desired;v->mip_fade=64;}
- pw_core_voice second=v->osc;
+ /* The second oscillator copy is only read during a mip crossfade; taking it
+    unconditionally cost a 16-byte struct copy on every voice of every sample. */
+ const unsigned fading=v->mip_fade;
+ pw_core_voice second;
+ if(fading)second=v->osc;
  int32_t sample=wave_tick(v,&v->osc,f,v->mip_from)/256;
- if(v->mip_fade){
+ if(fading){
   int32_t next=wave_tick(v,&second,f,v->mip_to)/256;
   sample=(sample*(int32_t)v->mip_fade+next*(64-(int32_t)v->mip_fade))/64;
   if(!--v->mip_fade)v->mip_from=v->mip_to;
  }
  return sample;
 }
-static void advance_lfo(poly_voice *v,const voice_frame *f){
+static PLAT_HOT void advance_lfo(poly_voice *v,const voice_frame *f){
  float raw=pw_lfo_tick(&v->lfo,(int32_t)f->lfo_increment);v->lfo_smoothed+=(raw-v->lfo_smoothed)*(1.0f/32.0f);
 }
-static float voice_sample(poly_voice *v,int advanced,const voice_frame *f,float matrix_cutoff,float matrix_q,const wave_matrix_frame *wm){
+static PLAT_HOT float voice_sample(poly_voice *v,int advanced,const voice_frame *f,float matrix_cutoff,float matrix_q,const wave_matrix_frame *wm){
  if(v->wait_samples){v->wait_samples--;return 0.0f;}
  if(f->filter_wet<=0.0f&&v->filter_dirty){pw_filter_reset(&v->filter);v->filter_dirty=0;}
  if(!live(v))return 0.0f;
@@ -590,7 +599,7 @@ static float voice_sample(poly_voice *v,int advanced,const voice_frame *f,float 
  }
  return dry;
 }
-static void render_voice_range(unsigned first,unsigned last){
+static PLAT_HOT void render_voice_range(unsigned first,unsigned last){
  for(unsigned j=0;j<voice_job.count;j++){
   const voice_frame *vf=&voice_job.frame[voice_job.uniform?0:j];
   /* TEST70: no sample-by-sample copying of 104-byte voice_frame objects. */
@@ -628,7 +637,11 @@ static void render_voice_range(unsigned first,unsigned last){
   }
  }
 }
-static void render_upper(void *unused){(void)unused;render_voice_range(1,voice_job.render_slots);}
+static PLAT_HOT void render_upper(void *unused){(void)unused;render_voice_range(1,voice_job.render_slots);}
+/* core_render runs in place from the flash and the voice loop from SRAM, which
+   is too far for a direct call: reach it through a pointer the compiler must
+   load (volatile) rather than fold back into one. */
+static void (* volatile const render_range)(unsigned,unsigned)=render_voice_range;
 void core_parallel_set(unsigned enabled){voice_parallel=!!enabled;}
 unsigned core_parallel_enabled(void){return voice_parallel;}
 unsigned core_worker_fault(void){return voice_worker_fault;}
@@ -789,11 +802,11 @@ void core_render(int32_t *lr,uint32_t n,uint32_t master){
   }
   int submitted=0;
   if(voice_parallel)submitted=dc_submit(render_upper,0);
-  render_voice_range(0,render_slots);
+  render_range(0,render_slots);
   if(submitted){
    if(!dc_wait()){voice_worker_fault=1;for(uint32_t k=j*2;k<n*2;k++)lr[k]=0;return;}
    ++voice_worker_jobs;
-  }else render_voice_range(1,render_slots);
+  }else render_range(1,render_slots);
   for(unsigned q=0;q<chunk;q++){
   float mix_left=0.0f,mix_right=0.0f;
   for(unsigned i=0;i<render_slots;i++){mix_left+=voice_job.output[i][q][0];mix_right+=voice_job.output[i][q][1];}

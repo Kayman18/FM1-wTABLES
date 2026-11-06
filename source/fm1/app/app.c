@@ -8,6 +8,7 @@
 #include "pw_bloom.h"
 #include "pw_delay.h"
 #include "pw_reverb.h"
+#include "splash_wtables.h"
 static unsigned preset_index;
 static unsigned matrix_row,note_row,note_column;
 #include "panel_lights.h"
@@ -38,6 +39,54 @@ static void select_reverb(unsigned model){
 }
 static uint32_t old_buttons;
 static uint8_t redraw,page,selected_button,tables_ready_latched;
+/* The splash is a one-shot UI state, never a blocking boot delay. Its first
+   frame is sent before app_init/audio/TIMER5 on hardware. TIMER4 already runs
+   then, so use that continuous clock rather than the not-yet-updated plat_ms.
+   The audio IRQ reads only splash_active; all drawing/timing runs on CPU0's
+   main loop. The existing canvas is reused, with no additional framebuffer. */
+static volatile uint8_t splash_active;
+static uint8_t splash_started,splash_ui_seen;
+static uint32_t splash_start_ticks,splash_progress_step,splash_blocked_keys;
+#ifdef PLAT_HOST
+#define SPLASH_TICKS_PER_MS 1u
+static uint32_t splash_ticks(void){return plat_ms();}
+#else
+#define SPLASH_TICKS_PER_MS (1000u*FM1_TICKS_PER_US)
+static uint32_t splash_ticks(void){return fm1_ticks();}
+#endif
+static unsigned splash_elapsed_ticks(uint32_t now,uint32_t start,uint32_t ticks_per_ms){
+ uint32_t elapsed=(uint32_t)(now-start);
+ if(elapsed>=WT_SPLASH_DURATION_MS*ticks_per_ms)return WT_SPLASH_DURATION_MS;
+ return elapsed/ticks_per_ms;
+}
+static unsigned splash_elapsed_ms(void){
+ return splash_elapsed_ticks(splash_ticks(),splash_start_ticks,SPLASH_TICKS_PER_MS);
+}
+void app_splash(void){
+ if(splash_started)return;
+ splash_active=splash_started=1;
+ wt_splash_draw(0);
+ lcd_sync(); /* Start the six seconds only after the whole image is visible. */
+ splash_start_ticks=splash_ticks();
+ splash_progress_step=0;
+}
+static void splash_discard_controls(void){
+ old_buttons=plat_buttons();
+ splash_blocked_keys=plat_keys();
+ for(unsigned i=0;i<NE;i++)(void)plat_enc((int)i);
+ core_keys(0);
+}
+static void splash_finish(void){
+ splash_discard_controls();
+ /* Consume the last queued pre-ready MIDI packets while the audio consumer
+    is excluded. A held startup key must be released before it can sound. */
+ uint32_t pkt,lock=plat_lock();int port;
+ while(plat_midi_in(&pkt,&port)){}
+ splash_active=0;
+ plat_unlock(lock);
+ overlay=(panel_overlay){0};
+ redraw=1;last_draw_ms=plat_ms()-33u;
+}
 static const char *ratchet_labels[]={"OFF","X2","X3","X4","X6","X8"};
 static const char *bloom_scales[]={"CHROMATIC","MAJOR","MINOR","PENT 02579","MIN PENT","HARM MINOR","WHOLE TONE","DORIAN","PHRYGIAN","LYDIAN","MIXOLYDIAN","LOCRIAN","MAJ PENT","MELODIC MIN","MIN BLUES","MAJ BLUES","DIM WH"};
 static const char *bloom_roots[]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
@@ -67,11 +116,15 @@ static void load_preset(unsigned index){
  uint32_t lock=plat_lock();st=next;core_set(&st);plat_unlock(lock);
  preset_index=index;page=29;redraw=1;
 }
-void app_init(void){reverb_cache_valid=0;note_row=note_column=0;matrix_row=0;for(unsigned r=0;r<4;r++){st.matrix_source[r]=(uint8_t[]){1,5,9,11}[r];st.matrix_dest[r]=0;st.matrix_amount[r]=0;}preset_index=0;core_init();st.delay_sync=1;st.delay_division=2;st.fx_reverb=0;st.reverb_model=3;st.reverb_size=70;st.reverb_damping=50;st.reverb_depth=20;st.reverb_mix=25;st.reverb_time_ms=2000;st.reverb_speed=25;st.bloom_ratchet=0;st.bloom_ratchet_chance=100;st.bloom_branches=st.bloom_path=0;st.bloom_mode=1;st.bloom_density=100;st.bloom_length=16;st.bloom_scale=2;st.bloom_root=0;st.bloom_offset=0;st.bloom_octave=3;st.bloom_mutation=0;st.bloom_reseed=st.bloom_restore=0;st.playing=0;st.note=48;st.position=0;st.bank=0;st.level=75;st.env=(pw_env_params){50,60,80,60};st.filter=(pw_filter_params){PW_FILTER_OFF,96,0,100};st.filter_env_depth=0;st.env2=(pw_env_params){60,70,64,50};st.filter_env2_depth=0;st.lfo=(pw_lfo_params){40,0,0,0};st.wave_env_depth=st.wave_env2_depth=0;st.tracking=(pw_tracking_params){0,0,0,0};st.lfo_phase_mode=PW_LFO_KEEP;st.lfo_spread=0;st.env2_pitch=0;st.amp_attack_shape=st.amp_decay_shape=st.env2_attack_shape=st.env2_decay_shape=0;st.sequencer_bpm=120;st.bloom_gate_percent=50;st.voice_limit=CORE_DEFAULT_VOICES;st.sustain_mode=0;st.lfo_pitch_cents=0;st.velocity_mode=st.velocity_curve=st.trigger_mode=0;st.velocity_amount=100;overlay=(panel_overlay){0};last_draw_ms=0;update_state=update_elapsed=update_at=0;octave_gesture_base=0;st.gain_db=0;st.delay_return_db= -3;st.delay_style=0;st.delay_mode=0;st.delay_time_ms=500;st.delay_feedback=50;st.delay_mix=35;st.delay_spread=0;st.delay_cross=100;st.delay_lowcut_hz=80;st.delay_highcut_hz=8000;st.unison_count=0;st.unison_mode=0;st.unison_detune=10;st.unison_wave_spread=0;st.wave_quality=1;st.chorus_mode=st.stereo_mode=0;st.stereo_spread=0;st.chorus_mix=50;st.coarse_tune=st.fine_tune=st.panel_octave=st.bend_range_offset=0;selected_button=B_HOME;old_buttons=0;tables_ready_latched=0;redraw=1;page=0;shown_note=shown_stage=shown_pending=0;core_set(&st);}
+void app_init(void){reverb_cache_valid=0;note_row=note_column=0;matrix_row=0;for(unsigned r=0;r<4;r++){st.matrix_source[r]=(uint8_t[]){1,5,9,11}[r];st.matrix_dest[r]=0;st.matrix_amount[r]=0;}preset_index=0;core_init();st.delay_sync=1;st.delay_division=2;st.fx_reverb=0;st.reverb_model=3;st.reverb_size=70;st.reverb_damping=50;st.reverb_depth=20;st.reverb_mix=25;st.reverb_time_ms=2000;st.reverb_speed=25;st.bloom_ratchet=0;st.bloom_ratchet_chance=100;st.bloom_branches=st.bloom_path=0;st.bloom_mode=1;st.bloom_density=100;st.bloom_length=16;st.bloom_scale=2;st.bloom_root=0;st.bloom_offset=0;st.bloom_octave=3;st.bloom_mutation=0;st.bloom_reseed=st.bloom_restore=0;st.playing=0;st.note=48;st.position=0;st.bank=0;st.level=75;st.env=(pw_env_params){50,60,80,60};st.filter=(pw_filter_params){PW_FILTER_OFF,96,0,100};st.filter_env_depth=0;st.env2=(pw_env_params){60,70,64,50};st.filter_env2_depth=0;st.lfo=(pw_lfo_params){40,0,0,0};st.wave_env_depth=st.wave_env2_depth=0;st.tracking=(pw_tracking_params){0,0,0,0};st.lfo_phase_mode=PW_LFO_KEEP;st.lfo_spread=0;st.env2_pitch=0;st.amp_attack_shape=st.amp_decay_shape=st.env2_attack_shape=st.env2_decay_shape=0;st.sequencer_bpm=120;st.bloom_gate_percent=50;st.voice_limit=CORE_STARTUP_VOICES;st.sustain_mode=0;st.lfo_pitch_cents=0;st.velocity_mode=st.velocity_curve=st.trigger_mode=0;st.velocity_amount=100;overlay=(panel_overlay){0};last_draw_ms=0;update_state=update_elapsed=update_at=0;octave_gesture_base=0;st.gain_db=0;st.delay_return_db= -3;st.delay_style=0;st.delay_mode=0;st.delay_time_ms=500;st.delay_feedback=50;st.delay_mix=35;st.delay_spread=0;st.delay_cross=100;st.delay_lowcut_hz=80;st.delay_highcut_hz=8000;st.unison_count=0;st.unison_mode=0;st.unison_detune=10;st.unison_wave_spread=0;st.wave_quality=1;st.chorus_mode=st.stereo_mode=0;st.stereo_spread=0;st.chorus_mix=50;st.coarse_tune=st.fine_tune=st.panel_octave=st.bend_range_offset=0;selected_button=B_HOME;old_buttons=0;tables_ready_latched=0;redraw=1;page=0;shown_note=shown_stage=shown_pending=0;core_set(&st);}
 void app_render(int32_t *lr,uint32_t n,uint32_t master){
+ const unsigned loading=splash_active;
  uint32_t pkt;int port;
- while(plat_midi_in(&pkt,&port))core_midi((unsigned)port,(uint8_t)(pkt>>8),(uint8_t)(pkt>>16),(uint8_t)(pkt>>24));
- core_render(lr,n,master);
+ while(plat_midi_in(&pkt,&port))if(!loading)core_midi((unsigned)port,(uint8_t)(pkt>>8),(uint8_t)(pkt>>16),(uint8_t)(pkt>>24));
+ /* Keep bank decompression and normal engine service running during startup,
+    but do not queue notes or leave any nonzero samples in the output buffer. */
+ core_render(lr,n,loading?0u:master);
+ if(loading)for(uint32_t i=0;i<2u*n;i++)lr[i]=0;
 }
 void app_panic(void){st.playing=0;core_panic();redraw=1;}
 void app_say(const char*a,const char*b){(void)a;(void)b;/* No visible text changed; do not redraw a static page. */}
@@ -81,6 +134,7 @@ static void edit_note(unsigned column,int delta){
  uint32_t lock=plat_lock();core_bloom_edit(index,delta,st.bloom_scale);plat_unlock(lock);note_column=column;
 }
 static void input(void){uint32_t b=plat_buttons(),now=plat_ms();int e;
+ if(splash_active){splash_discard_controls();return;}
  const uint32_t octmask=(1u<<B_OCTDN)|(1u<<B_OCTUP);int octcombo=(b&octmask)==octmask;
  if((b&octmask)&&!(old_buttons&octmask))octave_gesture_base=st.panel_octave;
  if(octcombo)st.panel_octave=octave_gesture_base;
@@ -137,9 +191,15 @@ static void input(void){uint32_t b=plat_buttons(),now=plat_ms();int e;
  if((e=plat_enc(EN_PRESET))){overlay_event(&overlay,OV_PRESET,b,now);unsigned next=(unsigned)limit((int)preset_index+e,0,PW_PRESET_COUNT-1);if(next!=preset_index)load_preset(next);else page=29;redraw=1;}
  if((e=plat_enc(EN_SELECT))){if(note_page())note_row=(unsigned)limit((int)note_row+e,0,3);overlay_event(&overlay,OV_SELECT,b,now);redraw=1;}
  if(plat_enc(EN_ALGO)){overlay_event(&overlay,OV_ALGO,b,now);redraw=1;}
- old_buttons=b;core_set(&st);core_keys(plat_keys());plat_lights(panel_hardware_mask(panel_transport_mask(b,selected_button,st.playing)),plat_keys(),0,0,0);
+ old_buttons=b;core_set(&st);
+ uint32_t keys=plat_keys();splash_blocked_keys&=keys;keys&=~splash_blocked_keys;
+ core_keys(keys);plat_lights(panel_hardware_mask(panel_transport_mask(b,selected_button,st.playing)),keys,0,0,0);
 }
-void app_input_only(void){input();}
+void app_input_only(void){
+ /* Do not extend the six-second deadline to the next scheduled UI frame. */
+ if(splash_active&&(uint32_t)(splash_ticks()-splash_start_ticks)>=WT_SPLASH_DURATION_MS*SPLASH_TICKS_PER_MS){app_frame();return;}
+ input();
+}
 static void card(int x,int y,const char*label,const char*value){
  unsigned k=(y==102?2u:0u)+(x==124?1u:0u);views[k].label=label;views[k].numeric=0;unsigned i=0;for(;value[i]&&i<31;i++)views[k].value[i]=value[i];views[k].value[i]=0;if(preparing_cards)return;cv_rect(x,y,108,44,C_LINE);cv_text(x+7,y+5,&FONT_XS,label,C_GRAY);cv_text(x+7,y+20,&FONT_B,value,C_WHITE);}
 static void numeric(int x,int y,const char*label,int v){char b[12];number(v,b);card(x,y,label,b);unsigned k=(y==102?2u:0u)+(x==124?1u:0u);views[k].numeric=1;views[k].value_num=v;}
@@ -415,6 +475,7 @@ static void draw_page(void){
 #include "large_panel.h"
 static void draw(void){
  if(update_state==1||update_state==3||(update_state==2&&(uint32_t)(plat_ms()-update_at)<700u))draw_update_overlay();
+ else if(splash_active){wt_splash_draw(splash_elapsed_ms());return;}
  else if(!pw_tables_ready()){
   cv_begin(240,240,C_BLACK);cv_text(10,20,&FONT_B,"WAVETABLE BANK",C_WHITE);
   cv_text(10,50,&FONT_B,"MISSING OR INVALID",C_HI);
@@ -433,8 +494,21 @@ void app_update_status(unsigned state,uint32_t elapsed_ms){
  else if(state==0&&update_state==1){update_state=2;update_at=plat_ms();redraw=1;}
  else if(state==2){update_state=3;update_elapsed=5000;core_panic();draw_update_overlay();cv_blit(0,0);}
 }
-void app_ui_init(void){lcd_fill(0,0,240,240,C_BLACK);redraw=1;}
+void app_ui_init(void){
+ /* Host boot enters here without the hardware's early app_splash hook.
+    Returning from OTA also enters here: it must never restart the splash. */
+ if(!splash_started)app_splash();
+ if(splash_ui_seen&&splash_active)splash_finish();
+ splash_ui_seen=1;
+ if(!splash_active)lcd_fill(0,0,240,240,C_BLACK);
+ redraw=1;last_draw_ms=plat_ms()-33u;
+}
 void app_frame(void){
+ if(splash_active){
+  unsigned elapsed=splash_elapsed_ms();
+  if(elapsed>=WT_SPLASH_DURATION_MS)splash_finish();
+  else if(elapsed/100u!=splash_progress_step){splash_progress_step=elapsed/100u;redraw=1;}
+ }
  input();
  /* One-shot startup/bank-load transition: do not leave the loading warning
     permanently visible after the data become ready. */
@@ -452,8 +526,17 @@ void app_frame(void){
 }
 
 #ifdef PLAT_HOST
+void app_host_reboot(void){
+ splash_active=splash_started=splash_ui_seen=0;
+ splash_start_ticks=splash_progress_step=splash_blocked_keys=0;
+}
 int app_expect(const char *name,int *value){
- if(!strcmp(name,"tables_busy"))*value=pw_tables_busy();
+ if(!strcmp(name,"splash_active"))*value=splash_active;
+ else if(!strcmp(name,"splash_elapsed_ms"))*value=(int)splash_elapsed_ms();
+ else if(!strcmp(name,"blocked_keys"))*value=(int)splash_blocked_keys;
+ else if(!strcmp(name,"update_state"))*value=(int)update_state;
+ else if(!strcmp(name,"held_voices"))*value=(int)core_held_count();
+ else if(!strcmp(name,"tables_busy"))*value=pw_tables_busy();
  else if(!strcmp(name,"tables_bank"))*value=(int)pw_tables_bank();
  else if(!strcmp(name,"tables_ready"))*value=pw_tables_ready();
  else if(!strcmp(name,"matrix_route"))*value=(int)matrix_row+1;

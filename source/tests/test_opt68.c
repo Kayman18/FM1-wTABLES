@@ -8,7 +8,7 @@ static int32_t pcm[512];
 static void render(unsigned blocks){for(unsigned k=0;k<blocks;k++){core_render(pcm,256,4096);assert(!core_worker_fault());}}
 static core_settings preset(void){core_settings s;assert(pw_preset_get(0,&s));s.playing=s.bloom_mode=0;s.voice_limit=4;s.unison_count=1;return s;}
 int main(void){
-  assert(STEAL_FADE==512u && VOICE_CHUNK==64u);
+  assert(STEAL_FADE==64u && VOICE_CHUNK==64u);
   core_init();core_parallel_set(0);core_settings s=preset();s.chorus_mode=2;s.chorus_mix=0;s.delay_mode=0;core_set(&s);render(15);
   assert(chorus_active==2 && chorus_sleeping && chorus_mix==0.0f);
   s.chorus_mix=55;core_set(&s);render(6);assert(!chorus_sleeping&&chorus_mix>0);

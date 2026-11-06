@@ -1,0 +1,2 @@
+PASS negative control: omitted .voice_hot rejected (.voice_hot: image differs from ELF at load address 0x208795c)
+PASS final target image: 4 initialized ELF sections match; .voice_hot 5752 B

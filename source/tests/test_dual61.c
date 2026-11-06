@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-int main(void){assert(CORE_MAX_VOICES==6 && CORE_DEFAULT_VOICES==4);int32_t*ref=malloc(512*800*sizeof(int32_t)),pcm[512];assert(ref);
+int main(void){assert(CORE_MAX_VOICES==8 && CORE_DEFAULT_VOICES==4);int32_t*ref=malloc(512*800*sizeof(int32_t)),pcm[512];assert(ref);
  for(unsigned dual=0;dual<2;dual++){
   core_init();core_parallel_set(dual);core_settings c;pw_preset_get(1,&c);c.voice_limit=4;c.unison_count=3;c.bloom_mode=1;c.bloom_length=32;c.bloom_branches=7;c.bloom_path=73;c.chorus_mode=2;c.fx_reverb=1;core_set(&c);c.playing=1;core_set(&c);
   for(unsigned b=0;b<800;b++){

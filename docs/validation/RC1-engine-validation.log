@@ -1,0 +1,4 @@
+TEST82 heavy hashes single=32223d73 dual=32223d73
+PASS TEST82: shared 8-voice pool, whole-group unison stealing, 64-sample steal tail, CC74 cutoff, CC71 resonance, 4+4 dual-core parity
+PASS: 29 presets x 3 voice limits x 2 unison render hash unchanged (WTGOLDEN 9fa1149245be5551)
+PASS: 300-seed randomized settings/notes/CC/bend fuzz hash unchanged (WTFUZZ d36cbbc5612ae044)

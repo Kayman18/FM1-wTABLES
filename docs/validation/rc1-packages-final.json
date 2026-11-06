@@ -1,0 +1,48 @@
+{
+  "identity": "FM-1_13008300",
+  "display_version": "wTABLES RC1",
+  "artifacts": {
+    "pwcore.bin": {
+      "bytes": 560904,
+      "sha256": "86572bc2b528217ea5d86cff9a33c5e1b0a2b75ddec745323e99d1ca464d554e"
+    },
+    "pwcore-0.83.0-rc1.fwsc": {
+      "bytes": 610108,
+      "sha256": "7ef8c023ec3a30c60a9387af907c67cbf7b090aa8cfda50cc24c933bec636de9"
+    },
+    "FM1-wTABLES-RC1-M-Flasher.bin": {
+      "bytes": 1048576,
+      "sha256": "c4ee0da0e4a0a08e17635c254d93d41ea1734da11ded04a056b35110e17d6572"
+    }
+  },
+  "initialized_elf_sections": [
+    {
+      "name": ".text",
+      "address": 33554720,
+      "load": 33554720,
+      "size": 552100
+    },
+    {
+      "name": ".ram_text",
+      "address": 29360128,
+      "load": 34106820,
+      "size": 2968
+    },
+    {
+      "name": ".voice_hot",
+      "address": 29363096,
+      "load": 34109788,
+      "size": 5752
+    },
+    {
+      "name": ".data",
+      "address": 29392896,
+      "load": 34115540,
+      "size": 84
+    }
+  ],
+  "fwsc_identity_crc_payloads_loader_exact": true,
+  "fwsc_decrypted_app_exact": true,
+  "full_decrypted_app_exact": true,
+  "full_preserved_regions_and_factory_banks_exact": true
+}

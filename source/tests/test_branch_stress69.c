@@ -11,7 +11,8 @@ static void render(unsigned n) {
  }
 }
 int main(void){
- assert(VOICE_CHUNK==64u && STEAL_FADE==512u && VOICES==6 && CORE_DEFAULT_VOICES==4u);
+ /* TEST82: eight slots, and the steal tail is 64 samples, not 512. */
+ assert(VOICE_CHUNK==64u && STEAL_FADE==64u && VOICES==8 && CORE_DEFAULT_VOICES==4u);
  for(unsigned count=4;count<=6;count++){
   core_init();core_parallel_set(1);core_settings s;pw_preset_default(&s);
   s.voice_limit=(uint8_t)count;s.unison_count=1;s.playing=0;s.bloom_mode=0;s.fx_reverb=1;s.reverb_model=3;

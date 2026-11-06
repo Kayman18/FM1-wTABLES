@@ -1,0 +1,17 @@
+{
+  "pwcore.bin": {
+    "bytes": 560904,
+    "sha256": "86572bc2b528217ea5d86cff9a33c5e1b0a2b75ddec745323e99d1ca464d554e",
+    "clean_rebuild_byte_identical": true
+  },
+  "pwcore-0.83.0-rc1.fwsc": {
+    "bytes": 610108,
+    "sha256": "7ef8c023ec3a30c60a9387af907c67cbf7b090aa8cfda50cc24c933bec636de9",
+    "clean_rebuild_byte_identical": true
+  },
+  "FM1-wTABLES-RC1-M-Flasher.bin": {
+    "bytes": 1048576,
+    "sha256": "c4ee0da0e4a0a08e17635c254d93d41ea1734da11ded04a056b35110e17d6572",
+    "clean_rebuild_byte_identical": true
+  }
+}

@@ -17,6 +17,18 @@
 #define PLAT_POOL __attribute__((section(".pool")))
 #endif
 
+/* The per-sample audio code runs from executable SRAM instead of in place from
+ * the flash: the voice loop is the only code that runs 44,100 times a second on
+ * every voice, and fetching it over XIP competes with the sample reads it makes.
+ * .voice_hot is copied to RAM at boot beside .ram_text (device/app.ld, the copy
+ * in main_fm1.c) and is covered by the same PC guard window. Unlike .ram_text it
+ * may call out, so only placement changes - never arithmetic. */
+#ifdef PLAT_HOST
+#define PLAT_HOT
+#else
+#define PLAT_HOT __attribute__((section(".voice_hot")))
+#endif
+
 /* panel controls, by printed label (Felucca's panel.c map turns these into matrix ids; Felucca
  * calls the second button SCL, the panel prints SEL) */
 enum { B_FX, B_SEL, B_ENV, B_LFO, B_EDIT, B_GLO, B_HOME, B_SAVE, B_ARP, B_SEQ, B_PLAY, B_REC,

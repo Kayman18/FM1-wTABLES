@@ -1,12 +1,13 @@
 #include "pw_performance.h"
+#include "plat.h"
 #include "pw_pitch_table.h"
-int32_t pw_performance_units(float cents){
+PLAT_HOT int32_t pw_performance_units(float cents){
  if(cents< -16800.0f)cents= -16800.0f;else if(cents>16800.0f)cents=16800.0f;
  return (int32_t)(cents*436.90667724609375f);
 }
 /* Separate wide multiply from loads for JieLi; no 64-bit division. */
-static __attribute__((noinline)) uint64_t product(uint32_t a,uint32_t b){return (uint64_t)a*b;}
-int32_t pw_performance_increment(uint32_t base,int32_t units){
+static PLAT_HOT __attribute__((noinline)) uint64_t product(uint32_t a,uint32_t b){return (uint64_t)a*b;}
+PLAT_HOT int32_t pw_performance_increment(uint32_t base,int32_t units){
  if(units< -7340032)units= -7340032;else if(units>7340032)units=7340032;
  int exponent=units/524288;if(units<0&&units%524288)exponent--;
  unsigned index=((uint32_t)units>>9)&1023u;

@@ -70,6 +70,7 @@ CONF = {}
 sys.path.insert(0, str(SRC / "tools"))
 import fm1pkg_make  # noqa: E402
 import lz4blk  # noqa: E402
+from check_image_layout import audit_image_layout  # noqa: E402
 
 APP_XIP = 0x02000120                # app.bin offset 0 in the XIP map; the SPL jumps here
 APP_SLOT = fm1pkg_make.APP_SLOT
@@ -455,7 +456,7 @@ def build_app():
     ld = SRC / "device" / ("app_wifi.ld" if WIFI else "app.ld")
     tc("pi32v2/bin/ld", *lto, "--gc-sections", "-e", "_start", "-T", ld, *objs, *b_objs,
        *b_libs, "-o", elf)
-    for sect in ("text.bin", "data.bin", "ramtext.bin"):
+    for sect in ("text.bin", "data.bin", "ramtext.bin", "voicehot.bin"):
         (OUT / sect).unlink(missing_ok=True)
     *_, syms, dis, rt = tc_all(("common/bin/objcopy", "-O", "binary", "-j", ".text", elf, OUT / "text.bin"),
                                ("common/bin/objcopy", "-O", "binary", "-j", ".data", elf, OUT / "data.bin"),
@@ -467,9 +468,13 @@ def build_app():
 
     def symv(name):
         return int(re.search(r"^([0-9a-f]+) .*\s" + name + r"$", syms, re.M).group(1), 16)
+    copies = [("ramtext.bin", "_rt_load"), ("data.bin", "_data_load")]
+    if re.search(r"\s_voice_hot_load$", syms, re.M) and symv("_voice_hot_end") > symv("_voice_hot_start"):
+        tc("common/bin/objcopy", "-O", "binary", "-j", ".voice_hot", elf, OUT / "voicehot.bin")
+        copies.insert(1, ("voicehot.bin", "_voice_hot_load"))
     img = bytearray((OUT / "text.bin").read_bytes())
-    # .ram_text and .data follow .text at their load addresses; crt0 copies them by words
-    for sect, lname in (("ramtext.bin", "_rt_load"), ("data.bin", "_data_load")):
+    # Every initialized SRAM section needs its flash bytes; fm1_cstart copies them by words.
+    for sect, lname in copies:
         load = symv(lname)
         if load % 4:
             raise SystemExit(f"{lname} {load:#x} is not word aligned")
@@ -563,6 +568,16 @@ def check(img, syms, dis, rt):
             notes.append("--no-ble: no Bluetooth code linked")
     if len(img) > APP_SLOT:
         errors.append(f"image {len(img)} B exceeds the app slot")
+    try:
+        regions = audit_image_layout((OUT / (NAME + ".elf")).read_bytes(), img, APP_XIP)
+    except (OSError, ValueError) as exc:
+        errors.append(f"ELF/image layout: {exc}")
+    else:
+        notes.append(f"ELF/image: all {len(regions)} initialized sections match their load addresses byte-for-byte")
+        sram = [r for r in regions if r["name"] in (".ram_text", ".voice_hot")]
+        if sram:
+            notes.append("executable SRAM: " + ", ".join(f"{r['name']} {r['size']} B" for r in sram)
+                         + "; startup copy symbols match ELF spans")
     # the FPU is single precision; a soft-double routine in the image means a double crept in
     soft = sorted(set(re.findall(r"\s(__(?:add|sub|mul|div|neg|cmp|eq|ne|lt|le|gt|ge|un|extendsf|truncdf|fixdf|fixunsdf|floatsidf|floatunsidf|floatdidf)\w*df\w*)$", syms, re.M)))
     if soft and (BLE or WIFI):

@@ -1,3 +1,7 @@
-TEST68 source does not redistribute any TTF/OTF font files.
-For matching UI rendering, install licensed BarlowSemiCondensed-Bold.ttf, BarlowSemiCondensed-Medium.ttf, and BarlowSemiCondensed-SemiBold.ttf under fm1/base/assets/fonts locally.
-See README.md for other build dependencies.
+Historical filename retained for compatibility with older source kits.
+
+The RC1 source DOES include the matching Barlow Semi Condensed font files in
+build-deps/fonts/, with their license. build-RC1-linux.sh selects that directory
+through X0X_FONT_DIRS. No separate font download is required for this release.
+
+See README-RC1.md for the current build dependencies and instructions.

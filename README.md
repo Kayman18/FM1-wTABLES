@@ -1,71 +1,83 @@
-# FM1 wTABLES — Poly Wavetable
+# FM1 wTABLES — RC1
 
-Polyphonic wavetable synthesizer firmware for the FM-1. The current published build is **TEST82 / 0.82.0**, featuring an eight-slot shared voice pool, dual-core voice rendering, Bloom sequencing, modulation matrix, and MIDI filter controls.
+**Release candidate 0.83.0-rc1**, built from the supplied TEST83 source with the approved layered-waveform splash and a six-second startup display. The splash itself contains **FM1**, **wTABLES**, and **LOADING**, with no RC label. Release metadata and downloadable filenames identify this build as RC1.
 
-**Status: experimental test firmware.** The default voice limit remains four. Eight-voice allocator and single/dual-core audio parity checks pass on the host; worst-case eight-voice real-time performance still needs physical FM-1 testing.
+wTABLES is a polyphonic wavetable synthesizer for the FM-1, with eight startup voices, a shared dynamic voice pool, dual-core rendering, Bloom sequencing, modulation, per-voice filters and envelopes, chorus, delay, and reverb.
 
 ## Downloads
 
-- [Built firmware — TEST82 M-Flasher image](firmware/FM1-PolyWavetable-TEST82-8Voice-Dynamic-CC71-74-M-Flasher.bin) (1,048,576 bytes; open the file and choose Download raw file).
-- [Browse the complete editable source and build scripts](source/).
-- [Download the repository ZIP](https://github.com/Kayman18/FM1-wTABLES/archive/refs/heads/main.zip).
-- [Firmware checksums](firmware/SHA256SUMS.txt).
+| File | Purpose |
+| --- | --- |
+| [FM1-wTABLES-RC1.fwsc](firmware/FM1-wTABLES-RC1.fwsc) | Application update through the existing FM1 firmware updater. Requires the matching wavetable data already installed. |
+| [FM1-wTABLES-RC1-M-Flasher.bin](firmware/FM1-wTABLES-RC1-M-Flasher.bin) | Full 1 MiB M-Flasher image, including the matching external wavetable partition. |
+| [SHA256SUMS.txt](firmware/SHA256SUMS.txt) | Checksums for the current and retained historical firmware files. |
+| [Editable source and build scripts](source/) | Browseable source used for this RC build. |
+| [Repository ZIP](https://github.com/Kayman18/FM1-wTABLES/archive/refs/heads/main.zip) | Download the complete repository snapshot. |
 
-Use the established M-Flasher procedure for this full 1 MiB image. Keep your own device backup before flashing. This image is distinct from the application-only `.fwsc` format; do not rename it to `.fwsc`.
+Use each file with its matching update method; a full M-Flasher `.bin` is a different format from `.fwsc`. The M-Flasher packer validates the compiled application and banks and preserves the protected regions from its supplied compatible base image.
 
-## Actual GUI
+## Actual firmware screens
 
-These are **240 × 240 framebuffer captures rendered by the matching TEST82 application in its host simulator**, using the firmware drawing code and bundled Barlow fonts. They are not AI mockups or photographs of a physical device. Battery/status readings are simulated.
+These are **240 × 240 framebuffer captures from the RC1 host simulator**, using the same drawing code and assets compiled into the firmware. The splash is captured at its three-second midpoint. They are not photographs of a physical FM-1; battery readings are simulated.
 
-| Main WAVE page | Filter | Amp envelope |
+| Six-second loading splash | Main WAVE page |
+| --- | --- |
+| ![wTABLES loading splash](docs/screenshots/splash.png) | ![Main WAVE GUI](docs/screenshots/home.png) |
+
+| Filter | Amp envelope | LFO matrix |
 | --- | --- | --- |
-| ![Main WAVE GUI](docs/screenshots/home.png) | ![Filter GUI](docs/screenshots/filter.png) | ![Envelope GUI](docs/screenshots/envelope.png) |
+| ![Filter GUI](docs/screenshots/filter.png) | ![Envelope GUI](docs/screenshots/envelope.png) | ![Modulation matrix GUI](docs/screenshots/matrix.png) |
 
-| LFO matrix | Bloom sequencer | Preset browser |
+| Bloom sequencer | Preset browser | Reverb |
 | --- | --- | --- |
-| ![Modulation matrix GUI](docs/screenshots/matrix.png) | ![Bloom sequencer GUI](docs/screenshots/sequencer.png) | ![Preset browser GUI](docs/screenshots/presets.png) |
+| ![Bloom sequencer GUI](docs/screenshots/sequencer.png) | ![Preset browser GUI](docs/screenshots/presets.png) | ![Reverb GUI](docs/screenshots/reverb.png) |
 
-![Reverb GUI](docs/screenshots/reverb.png)
+[Capture reproduction instructions](docs/GUI-CAPTURES.md) · [Capture script](source/tests/readme-screens.txt)
 
-[Capture script](source/tests/readme-screens.txt) · [Capture reproduction instructions](docs/GUI-CAPTURES.md)
+## RC1 changes
 
-## TEST82 changes
+- Approved splash option 2: cyan and purple layered waveforms on black, with white FM1/wTABLES lettering. The RC1 text was removed from the artwork as requested.
+- A progress bar advances over **6000 ms from completion of the first splash display**. The normal service loop continues during loading; the watchdog, USB/update handling, audio service, and wavetable preparation are not blocked by a six-second sleep.
+- Startup notes and control gestures are consumed while loading, and audio stays silent. Piano keys held through startup must be released before they sound. Recovery/update screens have priority, and returning from an updater session does not replay the splash.
+- The image reuses the existing canvas and is encoded as a compact four-colour RLE asset. The approved original, generated asset, and regeneration script are included in the source.
+- TEST83's eight-voice default and CPU optimizations are retained, including the four-plus-four dual-core allocation, cached calculations, inlined hot leaves, and executable-SRAM voice loop.
+- The target image builder now includes the `.voice_hot` executable-SRAM section at its linker-assigned flash load address. A build check verifies the bytes that startup copies to SRAM against the linked ELF.
+- Firmware identity and USB/display metadata are updated for **0.83.0-rc1 / FM-1_13008300**.
 
-- Eight physical voice slots shared across MIDI ports and channels, with coherent unison-group stealing.
-- Four even and four odd voice slots balanced across the two rendering cores.
-- Shorter 64-sample steal overlap, cached pitch/velocity calculations, and earlier dormant-voice bypass.
-- **MIDI CC74:** filter cutoff, 0–127. **MIDI CC71:** resonance, mapped to 0–100%.
-- Existing sustain CC64 and pitch bend retained.
-
-The inherited engine includes wavetable banks, per-voice filters and envelopes, LFO/Sloth modulation, Bloom sequencing, chorus, delay, and Clouds/GP5 reverb options. See [TEST82 notes](source/README-TEST82.md) and the source for exact controls.
+The existing CC74 cutoff, CC71 resonance, CC64 sustain, and pitch-bend behavior is retained. Eight remains the maximum physical voice count; RC1 does not raise that cap.
 
 ## Build and validation
 
-The source includes build scripts, matched fonts, and the SDK support subset. The compatible JieLi PI32v2 compiler is a separate dependency.
+See [BUILD-VALIDATION.md](BUILD-VALIDATION.md) for the actual RC1 build, startup, image-integrity, and regression results. Host tests establish correctness and audio equivalence for the checked cases; physical FM-1 boot timing, listening, and worst-case CPU/deadline headroom still require hardware testing.
+
+The source includes matched fonts and the SDK support subset. A compatible JieLi PI32v2 compiler is a separate dependency. This release uses `jieli-linux-toolchains-20260730.1`.
 
 ```sh
 cd source
-export JIELI_TOOLCHAIN=/absolute/path/to/jieli-toolchain
-bash build-TEST82-linux.sh
+export JIELI_TOOLCHAIN=/absolute/path/to/jieli-linux-toolchains-20260730.1
+bash build-RC1-linux.sh
 ```
 
-To assemble a full image from a known-compatible 1 MiB backup:
+To also create a full image from a known-compatible 1 MiB backup:
 
 ```sh
-bash build-TEST82-linux.sh /absolute/path/to/backup.bin output-M-Flasher.bin
+bash build-RC1-linux.sh /absolute/path/to/compatible-backup.bin FM1-wTABLES-RC1-M-Flasher.bin
 ```
 
-Run the TEST82 host regression:
+The wrapper builds `fm1/app/build/pwcore.bin` and `fm1/app/build/pwcore-0.83.0-rc1.fwsc`. The published updater is a byte-for-byte copy renamed `FM1-wTABLES-RC1.fwsc`.
+
+Engine regression:
 
 ```sh
 cd source
 bash tests/run82.sh
+sh tests/run_rc1_splash.sh
 ```
 
-The publication check passed under AddressSanitizer/UndefinedBehaviorSanitizer: shared eight-voice allocation, ninth-note stealing, unison-group stealing, 64-sample tails, CC71/CC74 mapping, bounded output, and identical heavy single/dual-core output (`32223d73`). The supplied firmware checksum matches the existing [target validation record](source/TEST82-VALIDATION.md). This publication reuses the delivered target-compiled firmware; it does not claim a new target rebuild or hardware test.
+See [source/README-RC1.md](source/README-RC1.md) for dependencies and packaging details, and [TEST83 notes](source/TEST83-CPU-AND-DEFAULT-8.md) for the inherited optimization work. Older test notes are retained as historical records.
 
 ## Source provenance and licenses
 
-TEST82 branches from the complete recovered TEST74-derived staging tree. Exact TEST75–TEST81 application sources were unavailable, so this is not a byte-identical TEST81 successor. Historical notes are retained under `source/`; the current build instructions are `build-TEST82-linux.sh` and `README-TEST82.md`.
+RC1 is based on the user-supplied `FM1-wTABLES-TEST83-Source.zip`. TEST83 descends from the complete TEST74-derived source recovered for TEST82; exact TEST75–TEST81 application sources were unavailable. This provenance is retained rather than claiming a byte-identical TEST81 lineage.
 
-Preserved licensing and attribution: [FM1 third-party notices](source/fm1/THIRD_PARTY.md), [base licensing](source/fm1/base/LICENSING.md), and [effect notices](source/THIRD_PARTY/). Consult the relevant files for each component's terms.
+Licensing and attribution are preserved in [FM1 third-party notices](source/fm1/THIRD_PARTY.md), [base licensing](source/fm1/base/LICENSING.md), and [effect notices](source/THIRD_PARTY/).

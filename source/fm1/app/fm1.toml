@@ -1,13 +1,13 @@
 name = "PWCORE"
 id_prefix = "FM-1_13"
 usb_manufacturer = "Poly Wavetable"
-usb_product = "PW TEST82 8V Dynamic"
+usb_product = "wTABLES RC1"
 ble = false
 usb_audio_in = false
 usb_audio_out = false
 words = "words.tsv"
 o2 = ["pw_core.c", "test_engine.c", "pw_env.c", "pw_filter.c", "pw_filter_mod.c", "pw_lfo.c", "pw_wave_mod.c", "pw_tracking.c", "pw_lfo_phase.c", "pw_env_pitch.c", "pw_performance.c", "pw_mip.c", "pw_chorus.c", "pw_stereo.c", "pw_unison.c", "pw_delay.c", "pw_reverb.c", "pw_gp5.c", "pw_gain.c", "pw_velocity.c", "pw_bloom.c", "pw_presets.c", "pw_sloth.c", "pw_matrix.c", "pw_tables.c"]
-tagline = "Recovered Disting EX Poly Wavetable eight-voice shared dynamic pool (four default) automatic mip synthesis unison stereo chorus delay dynamics and full screen control overlays; experimental native GP5 reverb with Clouds A/B"
-repo = ""
+tagline = "wTABLES RC1: eight-voice shared dynamic pool with eight voices by default, SRAM voice rendering, wavetable synthesis, unison, stereo effects and a six-second startup splash"
+repo = "https://github.com/Kayman18/FM1-wTABLES"
 licence = "See README"
 credits = "Triple Sloth: Don Cross, Michael Hetrick, Andrew Fitch (NLC); CC0-1.0. fm1-base; AKWF-FREE CC0. Recovered oscillator sub-kernel from Expert Sleepers disting EX firmware 1.26.1. Rikoshet delay topology adapted from SHLabs Rikoshet PingPong, GPL-3.0. Clouds-style ambient reverb based on Mutable Instruments Rings FX diffusion topology (MIT). GP5 reverb reconstructed from Valeton GP-5 V1.0.3 firmware, with native float delay storage."

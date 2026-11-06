@@ -16,12 +16,12 @@ int32_t pw_core_tick(pw_core_voice *v,const int16_t *frames,uint32_t frame_count
  * Only sample lookup maps that normalized position into smaller banks. */
 #define PW_CORE_NORMALIZED_MAX 3839u
 typedef struct {uint32_t frame,morph_q15;} pw_core_frame_blend;
-static inline uint32_t pw_core_normalized_position(int32_t position){
+static inline __attribute__((always_inline)) uint32_t pw_core_normalized_position(int32_t position){
     if(position<0)return 0;
     if((uint32_t)position>PW_CORE_NORMALIZED_MAX)return PW_CORE_NORMALIZED_MAX;
     return (uint32_t)position;
 }
-static inline pw_core_frame_blend pw_core_normalized_blend(int32_t position,uint32_t frame_count){
+static inline __attribute__((always_inline)) pw_core_frame_blend pw_core_normalized_blend(int32_t position,uint32_t frame_count){
     uint32_t p=pw_core_normalized_position(position);
     /* Exact floor(p*32768/3839) over p=0..3839. The rounded-up reciprocal
      * needs at most one correction; every product fits in uint32_t.
@@ -35,10 +35,10 @@ static inline pw_core_frame_blend pw_core_normalized_blend(int32_t position,uint
     if(blend.frame>=frame_count-1u){blend.frame=frame_count-2u;blend.morph_q15=32768u;}
     return blend;
 }
-static inline int32_t pw_core_blend_sample(int32_t first,int32_t second,uint32_t morph_q15){
+static inline __attribute__((always_inline)) int32_t pw_core_blend_sample(int32_t first,int32_t second,uint32_t morph_q15){
     return first*256+(((second-first)*(int32_t)morph_q15)>>7);
 }
-static inline int32_t pw_core_read_normalized(const int16_t *frames,uint32_t frame_count,uint32_t mip_shift,uint32_t phase,int32_t position){
+static inline __attribute__((always_inline)) int32_t pw_core_read_normalized(const int16_t *frames,uint32_t frame_count,uint32_t mip_shift,uint32_t phase,int32_t position){
     pw_core_frame_blend blend=pw_core_normalized_blend(position,frame_count);
     uint32_t length=2048u>>mip_shift,shifted_phase=phase>>mip_shift;
     uint32_t index=shifted_phase>>21,next=(index+1u)&(length-1u),fraction=(shifted_phase>>6)&32767u;

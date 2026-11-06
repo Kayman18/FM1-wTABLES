@@ -67,7 +67,9 @@ unsigned pw_bloom_step(pw_bloom *b,unsigned index,unsigned scale,unsigned amount
 }
 
 /* Source 0x240143d0, integer pitches; output is quantized at playback. */
-static unsigned pick(uint32_t *rng,unsigned n){return (unsigned)((uint64_t)pw_bloom_random(rng)*n>>32);}
+/* noinline for the same reason as mul64 in test_engine.c: the 64-bit multiply
+   stays clear of the loads around pw_bloom_branch (felucca-bsp docs/CPU.md). */
+static __attribute__((noinline)) unsigned pick(uint32_t *rng,unsigned n){return (unsigned)((uint64_t)pw_bloom_random(rng)*n>>32);}
 /* TEST68: compute only the data required by the chosen branch transform.
    RNG calls, generated nodes, and the complete 255-node tree are unchanged.
    In TEST67 the full-scale quantize/range/mean scan ran even for a simple

@@ -1,0 +1,100 @@
+app/pw_chorus.c:3:51: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+void pw_chorus_reset(pw_chorus *s){*s=(pw_chorus){0};}
+                                                  ^
+                                                  {}
+app/pw_chorus.c:3:51: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+void pw_chorus_reset(pw_chorus *s){*s=(pw_chorus){0};}
+                                                  ^
+                                                  {}
+2 warnings generated.
+app/pw_matrix.c:3:49: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+void pw_matrix_init(pw_matrix*m){*m=(pw_matrix){0};for(unsigned i=0;i<3;i++)pw_sloth_init(&m->sloth[i],i);for(unsigned i=0;i<101;i++)q_table[i]=pw_filter_q(i);}
+                                                ^
+                                                {}
+app/pw_matrix.c:3:49: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+void pw_matrix_init(pw_matrix*m){*m=(pw_matrix){0};for(unsigned i=0;i<3;i++)pw_sloth_init(&m->sloth[i],i);for(unsigned i=0;i<101;i++)q_table[i]=pw_filter_q(i);}
+                                                ^
+                                                {}
+2 warnings generated.
+app/test_engine.c:135:53: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+static void defaults(poly_voice *v){*v=(poly_voice){0};pw_env_init(&v->env);pw_env_init(&v->env2);pw_env_set(&v->env2,(pw_env_params){60,70,64,50});v->geometry=4;v->osc.pitch_scale_q12=4096;v->pan_left=v->pan_right=v->pan_target_left=v->pan_target_right=1.0f;}
+                                                    ^
+                                                    {}
+1 warning generated.
+In file included from base/device/unity.c:194:
+app/app.c:321:76: warning: unused variable 'x' [-Wunused-variable]
+  for(unsigned i=0;i<16;i++){unsigned index=i+(step>=16&&step<32?16:0);int x=10+(int)i*14,h=4+(int)core_bloom_pattern(index)*24/60;cv_rect(x,180-h,11,h,index>=st.bloom_length?C_LINE:st.bloom_mode&&st.playing&&index==step?C_HI:C_GRAY);}
+                                                                           ^
+app/app.c:321:91: warning: unused variable 'h' [-Wunused-variable]
+  for(unsigned i=0;i<16;i++){unsigned index=i+(step>=16&&step<32?16:0);int x=10+(int)i*14,h=4+(int)core_bloom_pattern(index)*24/60;cv_rect(x,180-h,11,h,index>=st.bloom_length?C_LINE:st.bloom_mode&&st.playing&&index==step?C_HI:C_GRAY);}
+                                                                                          ^
+app/app.c:374:51: warning: unused variable 'x' [-Wunused-variable]
+  for(unsigned i=0;i<4&&!preparing_cards;i++){int x=15+(int)i*52;char value[12];unsigned mip=core_voice_mip(i);if(core_voice_pitch(i)< -1500.0f){value[0]='-';value[1]='-';value[2]=0;}else number(mip?(int)(2048u>>mip):256,value);cv_text(x,177,&FONT_XS,value,C_HI);}
+                                                  ^
+app/app.c:391:10: warning: unused variable 'up' [-Wunused-variable]
+   float up=(1.0f+ra)*(1.0f-fm_expf(-t*fm_logf((1.0f+ra)/ra)));
+         ^
+app/app.c:392:10: warning: unused variable 'down' [-Wunused-variable]
+   float down=(1.0f+rd)*fm_expf(-t*fm_logf((1.0f+rd)/rd))-rd;
+         ^
+app/app.c:399:51: warning: unused variable 'y' [-Wunused-variable]
+  for(unsigned i=0;i<4&&!preparing_cards;i++){int y=171+(int)i*6;float pitch=core_voice_pitch(i);cv_rect(15,y,208,3,C_DIM);cv_rect(119,y,1,3,C_WHITE);if(pitch> -1500.0f)cv_rect(119+(int)(pitch*.04f),y,2,3,C_HI);}
+                                                  ^
+app/app.c:405:51: warning: unused variable 'y' [-Wunused-variable]
+  for(unsigned i=0;i<4&&!preparing_cards;i++){int y=171+(int)i*6,x=15+(int)((core_voice_phase(i)>>16)*207u/65536u);cv_rect(15,y,208,3,C_DIM);cv_rect(x,y,2,3,C_HI);}
+                                                  ^
+app/app.c:405:66: warning: unused variable 'x' [-Wunused-variable]
+  for(unsigned i=0;i<4&&!preparing_cards;i++){int y=171+(int)i*6,x=15+(int)((core_voice_phase(i)>>16)*207u/65536u);cv_rect(15,y,208,3,C_DIM);cv_rect(x,y,2,3,C_HI);}
+                                                                 ^
+app/app.c:411:66: warning: unused variable 'y' [-Wunused-variable]
+   float wave=core_voice_wave(i),cutoff=core_voice_cutoff(i);int y=171+(int)i*6;
+                                                                 ^
+app/app.c:426:11: warning: unused variable 'a' [-Wunused-variable]
+   pw_lfo a={(uint32_t)j*(UINT32_MAX/107u)},b={(uint32_t)(j+1)*(UINT32_MAX/107u)};
+          ^
+app/app.c:426:45: warning: unused variable 'b' [-Wunused-variable]
+   pw_lfo a={(uint32_t)j*(UINT32_MAX/107u)},b={(uint32_t)(j+1)*(UINT32_MAX/107u)};
+                                            ^
+app/app.c:451:39: warning: unused variable 'v' [-Wunused-variable]
+  if(!preparing_cards&&page==4){float v=core_env2_level();cv_rect(119,173,1,14,C_GRAY);cv_rect(v<0?119+(int)(v*104):119,175,(int)((v<0?-v:v)*104),10,C_HI);}else if(!preparing_cards)cv_rect(15,175,(int)(core_env_level()*208.0f),10,C_HI);
+                                      ^
+app/app.c:457:8: warning: unused variable 'y1' [-Wunused-variable]
+   int y1=181-(ui_wave_sample((uint32_t)j*255u/107u)*10)/32768;
+       ^
+app/app.c:458:8: warning: unused variable 'y2' [-Wunused-variable]
+   int y2=181-(ui_wave_sample((uint32_t)(j+1)*255u/107u)*10)/32768;
+       ^
+app/app.c:282:21: warning: unused variable 'stages' [-Wunused-variable]
+ static const char *stages[]={"IDLE","SUSTAIN","ATTACK","DECAY","RELEASE"};
+                    ^
+app/app.c:462:14: warning: unused variable 'hint' [-Wunused-variable]
+ const char *hint=page==29?"PRESET Browse  PLAY Audition":page==27||page==28||page==34||page==35?"SEQ Next page  SAVE Seed":page==13||page==14||page==18||page==22||page==23||page==26?"GLO Next page  HOME Main":page==6||page==9?"LFO Next page  HOME Main":(filter_page()||page==15||page==17||page==39||page==16||page==32||page==33)?"FX Next page  HOME Main":page==0||page==7||page==8?"HOME Next page  GLO Global":page==1||page==11||page==19?"ENV/EDIT Next  HOME Main":"ENV Next page  HOME Main";
+             ^
+16 warnings generated.
+font T: BarlowSemiCondensed-SemiBold.ttf 10px h 12, digit adv 5, 3600 B
+font XS: BarlowSemiCondensed-SemiBold.ttf 12px h 15, digit adv 6, 7005 B
+font S: BarlowSemiCondensed-Medium.ttf 15px h 16, digit adv 7, 8576 B
+font B: BarlowSemiCondensed-Bold.ttf 15px h 16, digit adv 8, 8752 B
+font M: BarlowSemiCondensed-SemiBold.ttf 23px h 24, digit adv 12, 11832 B
+font L: BarlowSemiCondensed-Bold.ttf 31px h 32, digit adv 16, 19776 B
+font OH: BarlowSemiCondensed-Bold.ttf 37px h 37, digit adv 19, 26455 B
+font TILE: BarlowSemiCondensed-Bold.ttf 48px h 48, digit adv 25, 9744 B
+font OV: BarlowSemiCondensed-Bold.ttf 78px h 77, digit adv 41, 23947 B
+font set barlow: 122181 B (approx)
+words: 3 own + 51 common -> /workspace/scratch/086343fb1d17/work/FM1-wTABLES-TEST83/source/fm1/app/web/words/95a41ce197.json (1059 B)
+loader: image 8236 B at 0x1c0a800, bss end 0x1c0f520
+loader: ota.bin 6952 B
+  ok    .ram_text: 929 insns, no calls
+  ok    no 64-bit multiply inlined beside a load
+  ok    ELF/image: all 4 initialized sections match their load addresses byte-for-byte
+  ok    executable SRAM: .ram_text 2968 B, .voice_hot 5752 B; startup copy symbols match ELF spans
+  ok    no soft-double routines (single-precision FPU only)
+  ok    image 560904 B; RAM .data+.bss 56544 B of 98304; pool 321988 B of 344064
+  ok    register access: felucca-bsp only (device/, include/ and the app clean)
+parts      (not built in: Bluetooth MIDI, Bluetooth MIDI devices, WiFi, USB audio in, USB audio out, velocity and pressure)
+app      /workspace/scratch/086343fb1d17/work/FM1-wTABLES-TEST83/source/fm1/app/build/pwcore.bin  560904 B
+loader   /workspace/scratch/086343fb1d17/work/FM1-wTABLES-TEST83/source/fm1/app/build/loader/ota.bin  6952 B
+package  /workspace/scratch/086343fb1d17/work/FM1-wTABLES-TEST83/source/fm1/app/build/pwcore-0.83.0-rc1.fwsc  610108 B, identity FM-1_13008300
+PASS 1 MiB: target compiler image + configured banks, full decrypted app/CRC and protection verification
+App: 560904 bytes; external: 247064 bytes; internal: 308735 bytes
+SHA256: c4ee0da0e4a0a08e17635c254d93d41ea1734da11ded04a056b35110e17d6572
