@@ -1,0 +1,8 @@
+wait 900
+expect tables_ready 0
+shot tables47-missing.png
+data data/factory-mips.pwbank 0x97000
+reboot
+wait 900
+expect tables_ready 1
+shot tables47-ready.png

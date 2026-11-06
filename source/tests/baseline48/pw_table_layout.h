@@ -1,0 +1,4 @@
+#pragma once
+#define PW_TABLE_FLASH_START 0x97000u
+#define PW_TABLE_BYTES 148653u
+#define PW_TABLE_FILE_CRC 0x1b04343eu

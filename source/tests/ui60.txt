@@ -1,0 +1,35 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1200
+expect voice_limit 6
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 38
+shot delay-clock.png
+tap FX
+expect page 39
+expect delay_spread 0
+expect delay_cross 100
+expect delay_lowcut_hz 80
+expect delay_highcut_hz 8000
+shot rikoshet-default.png
+spin K1 55
+expect delay_spread 55
+spin K2 -30
+expect delay_cross 70
+spin K3 3
+expect delay_lowcut_hz 140
+spin K4 -3
+expect delay_highcut_hz 7250
+wait 800
+shot rikoshet-controls.png
+spin PRESET 1
+expect delay_spread 55
+expect delay_cross 70
+expect delay_lowcut_hz 140
+expect delay_highcut_hz 7250
+shot rikoshet-after-preset.png

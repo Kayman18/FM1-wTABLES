@@ -1,0 +1,62 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+spin K2 43
+wait 30
+tap ENV
+spin K1 -127
+wait 30
+spin K1 90
+spin K2 0
+spin K3 -127
+spin K4 -127
+wait 30
+spin K3 20
+spin K4 80
+wait 30
+tap HOME
+tap FX
+spin K1 -127
+spin K2 -100
+spin K3 1
+spin K4 100
+wait 30
+spin K1 36
+wait 30
+tap SEL
+shot test22-depth-zero.png
+wav env-zero.wav
+tap PLAY
+wait 2000
+wavstop
+tap PLAY
+wait 2300
+spin K1 60
+wait 30
+shot test22-depth-sixty.png
+wav env-sweep.wav
+tap PLAY
+wait 2000
+wavstop
+tap PLAY
+wait 2300
+key 7 down
+wait 600
+key 11 down
+wait 80
+shot test22-independent-notes.png
+key 14 down
+wait 300
+shot test22-mod-chord.png
+tap ENV
+shot test22-mod-adsr.png
+key 7 up
+key 11 up
+key 14 up
+wait 3000
+shot test22-mod-idle.png

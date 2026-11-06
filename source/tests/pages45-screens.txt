@@ -1,0 +1,10 @@
+wait 900
+tap GLO
+wait 900
+shot direct45-performance.png
+tap GLO
+wait 900
+shot direct45-waves.png
+tap ENV
+wait 900
+shot direct45-envelope.png

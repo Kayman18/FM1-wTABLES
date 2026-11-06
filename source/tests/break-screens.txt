@@ -1,0 +1,28 @@
+wait 900
+tap ARP
+spin K1 6
+tap SEL
+wait 100
+shot break-panel.png
+spin K1 20
+wait 100
+shot break-time.png
+spin K2 2
+wait 100
+shot break-direction.png
+spin K3 1
+wait 100
+shot break-shape.png
+spin K4 -10
+wait 100
+shot break-level.png
+wait 800
+shot break-page.png
+midi USB 90 30 7f
+wait 50
+shot break-playing.png
+midi USB 80 30 00
+wait 800
+tap SEL
+wait 100
+shot break-return-chord.png

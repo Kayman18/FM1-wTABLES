@@ -1,3 +1,0 @@
-e8b08dc7603672480a37777ba246ddb14ca013bab1d800b48a6b25ff9e2c2152  firmware/FM1-PolyWavetable-TEST82-0.82.0.fwsc
-170493af5ee6dc85cdbf05fa9014b5dbb3da85b7071dd772427823f2541a74b7  firmware/FM1-PolyWavetable-TEST82-8Voice-Dynamic-CC71-74-M-Flasher.bin
-fadeed1465c17f82bd799652f0a4cc5a43df670b14bce2df50162081633be36b  downloads/FM1-PolyWavetable-TEST82-8Voice-Dynamic-Source-and-Build-Scripts.zip

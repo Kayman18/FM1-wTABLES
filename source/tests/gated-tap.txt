@@ -1,0 +1,23 @@
+wait 900
+tap ENV
+spin K1 -30
+spin K2 -30
+spin K3 -16
+spin K4 -30
+tap ENV
+spin K1 -50
+spin K2 -50
+spin K3 -128
+spin K4 -10
+tap HOME
+tap ENV
+tap SEL
+tap SEL
+spin K1 0
+wait 900
+wav gated-tap.wav
+midi USB 90 30 7f
+wait 10
+midi USB 80 30 00
+wait 1000
+wavstop

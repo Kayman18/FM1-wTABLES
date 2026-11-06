@@ -1,0 +1,18 @@
+PASS TEST66: all 14 UI labels match AKWF/fm-calm source directories and 224 distinct source files
+PASS: 14 genuine AKWF banks, all 16 frames across all 10 mips, lossless C decompressor, 29 presets, every bank covered, 3 unison max
+impulse mode=1 ms=250.0: L 0.22266@11027 R 0.00000@0
+impulse mode=2 ms=250.0: L 0.00000@0 R 0.22266@11027
+impulse mode=2 ms=750.0: L 0.00000@0 R 0.22266@33077
+ping-pong first=0.22266 second=0.16311
+max reverb samples 16744 (66976 bytes), model 0, size 1; within shared 141312 bytes
+PASS TEST60: 750ms clock, stereo and pingpong impulses, alternating feedback, numeric stability, control sweeps and all reverb memory models.
+PASS TEST61: matrix Wave Depth override (amount 0 and 100), fallback knob preserved; hashes 0f9c6d35 826babe3
+PASS: 32 OFF slots, re-enable and scale editing, density 0/50/100, ratchet suppression, clock advance, branch/mutation and preset/restore/reseed persistence.
+PASS: four audible voice slots in single/dual mode, fifth-note cap, preset retention, clamp and four-voice maximum.
+PASS TEST62: all 29 current presets, four voices, 32 steps and live seed edits, chorus, both effects with Clouds reverb: branches/path/Drone: every block identical in single/dual rendering.
+PASS TEST62: Bloom eighth-note intervals unchanged for all 40-240 BPM
+PASS TEST62: K1/K2 2800ms, K3/K4 1400ms, buttons 700ms, held overlays persistent
+PASS Clouds 60 sec / 44.1kHz, 32-bit delay, no nonfinite/output runaway; peak 0.17552 stereo 0.17386/0.17256 tail 0.11295; shared buffer remaining 18584 floats
+PASS TEST66: restored Clouds v63 (SPACE live, decay/mod, shared effects, four voices, no worker faults)
+PASS: TEST66 Clouds + AKWF bank/preset/overlay/voice regression suite completed
+Elapsed 32.15 seconds

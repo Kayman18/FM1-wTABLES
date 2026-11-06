@@ -1,0 +1,184 @@
+--- TEST66/fm1/app/test_engine.c
++++ TEST67/fm1/app/test_engine.c
+@@ -30,7 +30,10 @@
+ #include "plat.h"
+ #define VOICES CORE_MAX_VOICES
+ static uint32_t ratchet_age[VOICES];
+-#define STEAL_FADE 128u
++/* TEST67: 96 samples (2.18ms) instead of 128 (2.90ms).
++   Reduces sustained voice-stealing tail processing by 25%, retaining a
++   sufficiently long, continuous linear crossfade to avoid abrupt steals. */
++#define STEAL_FADE 96u
+ #define PANEL_PORT 254u
+ #define AUDITION_PORT 255u
+ static volatile core_settings st;
+@@ -46,6 +49,10 @@
+ static pw_reverb reverb;
+ static unsigned reverb_active,reverb_ready;
+ static float reverb_mix;
++/* TEST67: zero-mix effects sleep only once their audible fade reaches zero.
++   Reactivation resets histories before the fade-in, preventing stale echoes. */
++static unsigned reverb_sleeping, reverb_zero_samples;
++static unsigned delay_sleeping, chorus_sleeping;
+ static float delay_memory[PW_DELAY_FRAMES][2] PLAT_POOL;
+ static pw_delay delay;
+ static unsigned delay_active,delay_style_active;static float delay_mix,delay_feedback,synth_gain;
+@@ -85,7 +92,13 @@
+  float lfo_increment,filter_wet,track_vel_wave,track_pitch_wave,unison_wave_depth,wave_env_depth,wave_env2_depth,lfo_wave_depth,env2_pitch_depth,lfo_pitch_depth,tuning_cents,velocity_blend,velocity_depth,filter_depth,filter_depth2,lfo_filter_depth,track_vel_cutoff,track_pitch_cutoff,filter_base,filter_g,filter_q,voice_headroom;
+  int32_t position,gain,active_bank,filter_mode;
+ } voice_frame;
+-#define VOICE_CHUNK 64u
++/* TEST67: stage two 128-frame voice batches per 256-frame audio half.
++   Reduction from four worker mailbox submissions; additional staging is
++   drawn from normal RAM, not the tightly constrained audio pool. */
++#ifndef PW_VOICE_CHUNK
++#define PW_VOICE_CHUNK 128u
++#endif
++#define VOICE_CHUNK PW_VOICE_CHUNK
+ static struct {
+  voice_frame frame[VOICE_CHUNK];
+  float output[VOICES][VOICE_CHUNK][2];
+@@ -106,7 +119,7 @@
+ static void defaults(poly_voice *v){*v=(poly_voice){0};pw_env_init(&v->env);pw_env_init(&v->env2);pw_env_set(&v->env2,(pw_env_params){60,70,64,50});v->geometry=4;v->osc.pitch_scale_q12=4096;v->pan_left=v->pan_right=v->pan_target_left=v->pan_target_right=1.0f;}
+ void core_init(void){
+  pw_tables_init();
+- reverb=(pw_reverb){0};reverb_active=reverb_ready=0;reverb_mix=0;
++ reverb=(pw_reverb){0};reverb_active=reverb_ready=0;reverb_mix=0;reverb_sleeping=reverb_zero_samples=0;delay_sleeping=chorus_sleeping=0;
+  voice_worker_fault=0;voice_worker_jobs=0;voice_parallel=1;pw_matrix_init(&matrix);matrix_res_base=0;
+  ratchet_left=ratchet_interval=ratchet_index=0;ratchet_count=1;ratchet_rng=0x54b10001u;bloom_disabled=0;density_rng=0x57de1234u;for(unsigned i=0;i<VOICES;i++)ratchet_age[i]=0;pw_bloom_init(&bloom);bloom_left=bloom_gate_left=bloom_remainder=bloom_reseed_seen=bloom_restore_seen=0;bloom_running=bloom_gate=0;bloom_index=255;bloom_note=0;bloom_tempo=0;
+  st=(core_settings){0,48,0,0,75,{50,60,80,60},{PW_FILTER_OFF,96,0,100},0,{60,70,64,50},0,{40,0,0,0},0,0,{0,0,0,0},PW_LFO_KEEP,0,0};
+@@ -525,10 +538,16 @@
+  return span;
+ }
+ void core_render(int32_t *lr,uint32_t n,uint32_t master){
+- if(n)pw_tables_service(st.bank,gain==0);
++ if(n){
++  /* 8 codec blocks on active DSP/voices, 16 when otherwise idle. The
++     audio callback is never allowed an unbounded bank decompression loop. */
++  unsigned budget=(st.fx_reverb||st.delay_mode||st.chorus_mode||bloom_running)?8u:16u;
++  if(budget==16u)for(unsigned vi=0;vi<VOICES;vi++)if(live(&slots[vi].main)||slots[vi].fade){budget=8u;break;}
++  pw_tables_service_budget(st.bank,gain==0,budget);
++ }
+  if(voice_worker_fault||!pw_tables_ready()){for(uint32_t i=0;i<2*n;i++)lr[i]=0;return;}
+  if(panic_requested){
+-  reverb_active=reverb_ready=0;reverb_mix=0;
++  reverb_active=reverb_ready=0;reverb_mix=0;reverb_sleeping=reverb_zero_samples=0;delay_sleeping=chorus_sleeping=0;
+   bloom_running=0;bloom_index=255;bloom_left=bloom_gate_left=0;ratchet_reset();
+   pw_delay_reset(&delay,(float)st.delay_time_ms*22.05f+1.0f);delay_active=0;delay_mix=0.0f;delay_feedback=0.0f;
+   pw_chorus_reset(&chorus);chorus_active=0;chorus_mix=0.0f;
+@@ -548,15 +567,21 @@
+  /* Change shared-buffer owner only after the old effect has faded out.
+     Clear incrementally once per block while dry audio/sequence keep running. */
+  if(reverb_active!=settings.fx_reverb&&reverb_mix==0.0f&&delay_mix==0.0f){
+-  reverb_active=settings.fx_reverb;reverb_ready=0;
++  reverb_active=settings.fx_reverb;reverb_ready=0;reverb_sleeping=0;reverb_zero_samples=0;delay_sleeping=0;
+   if(reverb_active){pw_reverb_configure(&reverb,&delay_memory[0][0],PW_DELAY_FRAMES*2,settings.reverb_model,settings.reverb_size,44100);delay_active=0;}
+   else{pw_delay_reset(&delay,(float)settings.delay_time_ms*22.05f+1.0f);delay_active=0;}
+  }
+  if(reverb_active){
++  /* Wake an effect held at zero mix with a clean history. Its 16,744 floats
++     are cleared incrementally, never in one expensive audio callback. */
++  if(reverb_sleeping&&settings.reverb_mix){
++   pw_reverb_configure(&reverb,&delay_memory[0][0],PW_DELAY_FRAMES*2,settings.reverb_model,settings.reverb_size,44100);
++   reverb_ready=0;reverb_sleeping=0;reverb_zero_samples=0;
++  }
+   /* Clouds SPACE changes diffusion in-place; don't discard the reverb tail. */
+   pw_reverb_space(&reverb,settings.reverb_size);
+   pw_reverb_controls(&reverb,settings.reverb_time_ms,settings.reverb_damping,settings.reverb_speed,settings.reverb_depth);
+-  if(!reverb_ready&&n)reverb_ready=pw_reverb_clear(&reverb,&delay_memory[0][0],2048);
++  if(!reverb_ready&&n&&!reverb_sleeping)reverb_ready=pw_reverb_clear(&reverb,&delay_memory[0][0],2048);
+  }
+  voice_job.settings=settings;for(unsigned p=0;p<3;p++)for(unsigned c=0;c<16;c++)voice_job.controls[p][c]=controls[p][c];
+  output_peaks[0]=output_peaks[1]=0.0f;
+@@ -643,21 +668,30 @@
+   for(unsigned i=0;i<render_slots;i++){mix_left+=voice_job.output[i][q][0];mix_right+=voice_job.output[i][q][1];}
+   float gain_error=target_synth_gain-synth_gain,next_gain=synth_gain+gain_error*(1.0f/256.0f);if(next_gain==synth_gain||(gain_error<.000001f&&gain_error> -.000001f))synth_gain=target_synth_gain;else synth_gain=next_gain;
+   if(synth_gain!=1.0f){mix_left*=synth_gain;mix_right*=synth_gain;}
+-  if(chorus_active!=settings.chorus_mode&&chorus_mix==0.0f){pw_chorus_reset(&chorus);chorus_active=settings.chorus_mode;}
++  if(chorus_active!=settings.chorus_mode&&chorus_mix==0.0f){pw_chorus_reset(&chorus);chorus_active=settings.chorus_mode;chorus_sleeping=1;}
+   float target_mix=chorus_active==settings.chorus_mode&&chorus_active?(float)settings.chorus_mix*.01f:0.0f;
+   if(chorus_mix<target_mix){chorus_mix+=1.0f/256.0f;if(chorus_mix>target_mix)chorus_mix=target_mix;}
+   else if(chorus_mix>target_mix){chorus_mix-=1.0f/256.0f;if(chorus_mix<target_mix)chorus_mix=target_mix;}
+-  if(chorus_active){float input[4]={mix_left,mix_right,0.0f,0.0f},effect[4];pw_chorus_tick_stereo(&chorus,input,effect,chorus_active);if(chorus_mix>0.0f){mix_left+=(effect[0]-mix_left)*chorus_mix;mix_right+=(effect[1]-mix_right)*chorus_mix;if(chorus_active==2){if(chorus_compensation_mix!=chorus_mix){chorus_compensation=pw_chorus_mix_headroom(chorus_mix);chorus_compensation_mix=chorus_mix;}mix_left*=chorus_compensation;mix_right*=chorus_compensation;}}}
++  if(chorus_active&&chorus_mix>0.0f&&chorus_sleeping){pw_chorus_reset(&chorus);chorus_sleeping=0;}
++  if(chorus_active&&chorus_mix==0.0f&&target_mix==0.0f)chorus_sleeping=1;
++  if(chorus_active&&!chorus_sleeping){float input[4]={mix_left,mix_right,0.0f,0.0f},effect[4];pw_chorus_tick_stereo(&chorus,input,effect,chorus_active);if(chorus_mix>0.0f){mix_left+=(effect[0]-mix_left)*chorus_mix;mix_right+=(effect[1]-mix_right)*chorus_mix;if(chorus_active==2){if(chorus_compensation_mix!=chorus_mix){chorus_compensation=pw_chorus_mix_headroom(chorus_mix);chorus_compensation_mix=chorus_mix;}mix_left*=chorus_compensation;mix_right*=chorus_compensation;}}}
+   if(!reverb_active){
+-  if((delay_active!=settings.delay_mode||delay_style_active!=settings.delay_style)&&delay_mix==0.0f){delay_active=settings.delay_mode;delay_style_active=settings.delay_style;pw_delay_reset(&delay,(float)settings.delay_time_ms*22.05f+1.0f);delay_feedback=(float)settings.delay_feedback*.01f;}
++  if((delay_active!=settings.delay_mode||delay_style_active!=settings.delay_style)&&delay_mix==0.0f){delay_active=settings.delay_mode;delay_style_active=settings.delay_style;pw_delay_reset(&delay,(float)settings.delay_time_ms*22.05f+1.0f);delay_feedback=(float)settings.delay_feedback*.01f;delay_sleeping=1;}
+   float target_delay_mix=!settings.fx_reverb&&delay_active==settings.delay_mode&&delay_style_active==settings.delay_style&&delay_active?(delay_style_active?target_return:(float)settings.delay_mix*.01f):0.0f;
+   if(delay_mix<target_delay_mix){delay_mix+=1.0f/256.0f;if(delay_mix>target_delay_mix)delay_mix=target_delay_mix;}else if(delay_mix>target_delay_mix){delay_mix-=1.0f/256.0f;if(delay_mix<target_delay_mix)delay_mix=target_delay_mix;}
+-  if(delay_active){float target=(float)settings.delay_feedback*.01f,error=target-delay_feedback;delay_feedback+=error*(1.0f/64.0f);if(error<.000001f&&error> -.000001f)delay_feedback=target;float input[2]={mix_left,mix_right},out[2];(delay_style_active?pw_delay_tick_source:pw_delay_tick)(&delay,input,out,delay_active,delay_samples,delay_feedback,delay_mix);mix_left=out[0];mix_right=out[1];}
++  if(delay_active&&delay_mix>0.0f&&delay_sleeping){pw_delay_reset(&delay,delay_samples);delay_sleeping=0;}
++  if(delay_active&&delay_mix==0.0f&&target_delay_mix==0.0f)delay_sleeping=1;
++  if(delay_active&&!delay_sleeping){float target=(float)settings.delay_feedback*.01f,error=target-delay_feedback;delay_feedback+=error*(1.0f/64.0f);if(error<.000001f&&error> -.000001f)delay_feedback=target;float input[2]={mix_left,mix_right},out[2];(delay_style_active?pw_delay_tick_source:pw_delay_tick)(&delay,input,out,delay_active,delay_samples,delay_feedback,delay_mix);mix_left=out[0];mix_right=out[1];}
+   }else{
+    float target=reverb_ready&&settings.fx_reverb&&reverb.model==settings.reverb_model&&reverb.size==settings.reverb_size?(float)settings.reverb_mix*.01f:0.0f;
+    if(reverb_mix<target){reverb_mix+=1.0f/256.0f;if(reverb_mix>target)reverb_mix=target;}
+    else if(reverb_mix>target){reverb_mix-=1.0f/256.0f;if(reverb_mix<target)reverb_mix=target;}
+-   if(reverb_ready){float wet[2];pw_reverb_tick(&reverb,(mix_left+mix_right)*.5f,wet);mix_left+=wet[0]*(.375f*reverb_mix);mix_right+=wet[1]*(.375f*reverb_mix);}
++   /* Preserve the tail through the 256-sample wet fade; suspend further
++      full-rate Clouds ticks at zero wet. Any subsequent wake starts clean. */
++   if(settings.reverb_mix==0u&&reverb_mix==0.0f&&target==0.0f){if(reverb_zero_samples<256u)++reverb_zero_samples;}
++   else reverb_zero_samples=0;
++   if(reverb_zero_samples>=256u)reverb_sleeping=1;
++   if(reverb_ready&&!reverb_sleeping){float wet[2];pw_reverb_tick(&reverb,(mix_left+mix_right)*.5f,wet);mix_left+=wet[0]*(.375f*reverb_mix);mix_right+=wet[1]*(.375f*reverb_mix);}
+   }
+   float scale=(float)voice_job.frame[uniform?0:q].gain*(256.0f/(4096.0f*4.0f));
+   float output[2]={mix_left*scale,mix_right*scale};
+--- TEST66/fm1/app/pw_tables.c
++++ TEST67/fm1/app/pw_tables.c
+@@ -44,13 +44,15 @@
+  cursor=file+read32(file+16+16*local);end=cursor+read32(file+20+16*local);
+  expected_crc=read32(file+24+16*local);busy=1;
+ }
+-void pw_tables_service(unsigned desired,int silent){
++void pw_tables_service_budget(unsigned desired,int silent,unsigned max_blocks){
+  if(!ready||desired>=PW_TABLE_BANKS||!silent)return;
+  if((busy&&desired!=loading)||(!busy&&desired!=bank))begin(desired);
+  if(!busy)return;
+- for(unsigned i=0;i<16&&count<PW_BANK_SAMPLES;i++)if(block()){ready=0;busy=0;return;}
++ if(max_blocks<1u)max_blocks=1u;if(max_blocks>16u)max_blocks=16u;
++ for(unsigned i=0;i<max_blocks&&count<PW_BANK_SAMPLES;i++)if(block()){ready=0;busy=0;return;}
+  if(count==PW_BANK_SAMPLES){if(cursor!=end||~checksum!=expected_crc){ready=0;busy=0;return;}bank=loading;busy=0;}
+ }
++void pw_tables_service(unsigned desired,int silent){pw_tables_service_budget(desired,silent,16u);}
+ static int validate(const uint8_t *p,unsigned bytes,uint32_t crc,unsigned banks){
+  static const uint8_t magic[8]={'P','W','L','C','4','9','0','1'};
+  if(!p||bytes<512||banks>29)return 0;
+--- TEST66/fm1/app/pw_tables.h
++++ TEST67/fm1/app/pw_tables.h
+@@ -5,6 +5,7 @@
+ int pw_tables_ready(void);
+ int pw_tables_busy(void);
+ unsigned pw_tables_bank(void);
+-/* CPU0 only, before launching workers; at most 16 blocks per render call. */
++/* CPU0 only, before launching workers; budget is capped at 16 codec blocks. */
+ void pw_tables_service(unsigned desired,int silent);
++void pw_tables_service_budget(unsigned desired,int silent,unsigned max_blocks);
+ extern const int16_t *pw_table_mips[10][PW_TABLE_BANKS];
+--- TEST66/fm1/app/app.c
++++ TEST67/fm1/app/app.c
+@@ -393,7 +393,10 @@
+  else if(state==2){update_state=3;update_elapsed=5000;core_panic();draw_update_overlay();cv_blit(0,0);}
+ }
+ void app_ui_init(void){lcd_fill(0,0,240,240,C_BLACK);redraw=1;}
+-void app_frame(void){input();if(page==23||page==27||page==28||page==34||page==35||note_page())redraw=1;if((uint32_t)(plat_ms()-meter_ms)>=500){meter_ms=plat_ms();battery_pct=plat_battery_pct();meter_cpu=plat_cpu_pct();meter_xruns=plat_xruns();redraw=1;}unsigned note=core_active_note(),stage=core_env_stage();unsigned voices=core_voice_count(),pending=core_pending_count();if(pending!=shown_pending){shown_pending=pending;redraw=1;}if(note!=shown_note||stage!=shown_stage||voices!=shown_voices){shown_voices=voices;shown_note=note;shown_stage=stage;redraw=1;}if(((page==1||page==4)&&voices)||((page==3||page==5||page==6||page==7||page==8)&&voices)||(page==9&&(voices||st.lfo_phase_mode!=PW_LFO_KEEP))||(page==10&&voices)||page==13||page==15||(page==14&&voices))redraw=1;if(overlay.active&&!overlay_visible(&overlay,old_buttons&~(1u<<B_ARP),plat_ms())){overlay.active=0;redraw=1;}if(update_state==2&&(uint32_t)(plat_ms()-update_at)>=700u){update_state=0;redraw=1;}if(overlay.active&&!old_buttons)redraw=1;if(redraw&&(uint32_t)(plat_ms()-last_draw_ms)>=33){redraw=0;last_draw_ms=plat_ms();draw();}}
++void app_frame(void){input();if(page==23||page==27||page==28||page==34||page==35||note_page())redraw=1;if((uint32_t)(plat_ms()-meter_ms)>=500){meter_ms=plat_ms();battery_pct=plat_battery_pct();meter_cpu=plat_cpu_pct();meter_xruns=plat_xruns();redraw=1;}unsigned note=core_active_note(),stage=core_env_stage();unsigned voices=core_voice_count(),pending=core_pending_count();if(pending!=shown_pending){shown_pending=pending;redraw=1;}if(note!=shown_note||stage!=shown_stage||voices!=shown_voices){shown_voices=voices;shown_note=note;shown_stage=stage;redraw=1;}if(((page==1||page==4)&&voices)||((page==3||page==5||page==6||page==7||page==8)&&voices)||(page==9&&(voices||st.lfo_phase_mode!=PW_LFO_KEEP))||(page==10&&voices)||page==13||page==15||(page==14&&voices))redraw=1;if(overlay.active&&!overlay_visible(&overlay,old_buttons&~(1u<<B_ARP),plat_ms())){overlay.active=0;redraw=1;}if(update_state==2&&(uint32_t)(plat_ms()-update_at)>=700u){update_state=0;redraw=1;}/* TEST67: static knob overlay remains visible without forcing 30fps redraws. *//* Animated pages refresh at at most 15fps while knob/button feedback
++   remains responsive (up to 30fps). No framebuffer-size change. */
++unsigned frame_ms=(overlay.active||old_buttons||update_state)?33u:66u;
++if(redraw&&(uint32_t)(plat_ms()-last_draw_ms)>=frame_ms){redraw=0;last_draw_ms=plat_ms();draw();}}
+ 
+ #ifdef PLAT_HOST
+ int app_expect(const char *name,int *value){
+--- TEST66/fm1/app/fm1.toml
++++ TEST67/fm1/app/fm1.toml
+@@ -1,7 +1,7 @@
+ name = "PWCORE"
+ id_prefix = "FM-1_13"
+ usb_manufacturer = "Poly Wavetable"
+-usb_product = "PW AKWF16 TEST66"
++usb_product = "PW AKWF16 TEST67"
+ ble = false
+ usb_audio_in = false
+ usb_audio_out = false

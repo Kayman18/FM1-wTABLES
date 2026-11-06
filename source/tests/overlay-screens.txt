@@ -1,0 +1,215 @@
+wait 900
+shot overlay-idle.png
+press ENV
+wait 100
+shot overlay-env-held.png
+wait 1200
+shot overlay-env-still-held.png
+release ENV
+wait 100
+shot overlay-env-released.png
+wait 650
+shot overlay-env-return.png
+tap HOME
+wait 750
+press FX
+press SEL
+spin K1 60
+wait 50
+shot overlay-combo-knob.png
+release SEL
+release FX
+wait 750
+tap HOME
+wait 750
+press FX
+press SEL
+wait 50
+shot overlay-combo-panel.png
+release SEL
+release FX
+wait 750
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 2
+spin K2 -99
+wait 50
+shot overlay-delay-time.png
+wait 800
+shot overlay-delay-return.png
+spin K1 99
+wait 50
+shot overlay-delay-choice.png
+spin PRESET 2
+wait 50
+shot overlay-preset.png
+master 3072
+wait 50
+shot overlay-master.png
+wait 750
+shot overlay-master-return.png
+master 3073
+wait 50
+shot overlay-master-jitter.png
+tap SEL
+spin K1 1
+spin K2 -40
+spin K3 1
+wait 50
+shot overlay-dynamics-choice.png
+wait 750
+shot overlay-dynamics-return.png
+spin K2 0
+spin K2 1000
+wait 50
+shot overlay-clamped-knob.png
+spin SELECT 1
+wait 50
+shot overlay-select.png
+spin ALGO 1
+wait 50
+shot overlay-algo.png
+tap HOME
+wait 750
+press SAVE
+press ARP
+press SEQ
+press REC
+wait 50
+shot overlay-unassigned-combo.png
+release SAVE
+release ARP
+release SEQ
+release REC
+wait 750
+shot overlay-unassigned-return.png
+
+press FX
+wait 750
+shot overlay-button-FX.png
+release FX
+wait 750
+
+press SEL
+wait 750
+shot overlay-button-SEL.png
+release SEL
+wait 750
+
+press ENV
+wait 750
+shot overlay-button-ENV.png
+release ENV
+wait 750
+
+press LFO
+wait 750
+shot overlay-button-LFO.png
+release LFO
+wait 750
+
+press EDIT
+wait 750
+shot overlay-button-EDIT.png
+release EDIT
+wait 750
+
+press GLO
+wait 750
+shot overlay-button-GLO.png
+release GLO
+wait 750
+
+press HOME
+wait 750
+shot overlay-button-HOME.png
+release HOME
+wait 750
+
+press SAVE
+wait 750
+shot overlay-button-SAVE.png
+release SAVE
+wait 750
+
+press ARP
+wait 750
+shot overlay-button-ARP.png
+release ARP
+wait 750
+
+press SEQ
+wait 750
+shot overlay-button-SEQ.png
+release SEQ
+wait 750
+
+press PLAY
+wait 750
+shot overlay-button-PLAY.png
+release PLAY
+wait 750
+
+press REC
+wait 750
+shot overlay-button-REC.png
+release REC
+wait 750
+
+press OCT-
+wait 750
+shot overlay-button-OCTdn.png
+release OCT-
+wait 750
+
+press OCT+
+wait 750
+shot overlay-button-OCTup.png
+release OCT+
+wait 750
+
+press FX
+press SEL
+press ENV
+press LFO
+press EDIT
+press GLO
+press HOME
+press SAVE
+press ARP
+press SEQ
+press PLAY
+press REC
+press OCT-
+press OCT+
+wait 750
+shot overlay-all-buttons.png
+release FX
+release SEL
+release ENV
+release LFO
+release EDIT
+release GLO
+release HOME
+release SAVE
+release ARP
+release SEQ
+release PLAY
+release REC
+release OCT-
+release OCT+
+wait 750
+shot overlay-all-return.png
+master 0
+wait 50
+shot overlay-master-zero.png
+master 4096
+wait 50
+shot overlay-master-full.png
+
+spin K4 -1
+wait 50
+shot overlay-k4.png

@@ -1,0 +1,42 @@
+wait 900
+expect preset 0
+expect default_match 1
+spin PRESET 1
+expect preset 1
+expect preset_page 1
+expect playing 0
+expect dual_enabled 1
+wait 100
+shot presets41-overlay.png
+wait 900
+shot presets41-browser.png
+tap PLAY
+wait 500
+expect voices >0
+spin PRESET 7
+expect preset 8
+expect playing 0
+wait 20
+expect voices 0
+wait 900
+shot presets41-pad.png
+tap PLAY
+wait 1800
+shot presets41-pad-playing.png
+spin K1 8
+expect preset 16
+expect playing 0
+wait 900
+shot presets41-bass.png
+spin PRESET 100
+expect preset 16
+spin PRESET -100
+expect preset 0
+expect default_match 1
+spin PRESET 12
+expect preset 12
+tap HOME
+spin K3 1
+spin PRESET 1
+expect preset 13
+expect preset_page 1

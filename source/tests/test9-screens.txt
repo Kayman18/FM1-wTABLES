@@ -1,0 +1,38 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 500
+master 3072
+shot test9-main.png
+wav audition.wav
+tap PLAY
+wait 1000
+shot wave-min.png
+spin K2 100
+wait 1000
+shot wave-max.png
+wavstop
+tap EDIT
+wait 50
+shot test9-adsr.png
+tap PLAY
+wait 1000
+wav keyboard-midi.wav
+wait 200
+key 7 down
+wait 1000
+key 7 up
+wait 1000
+midi USB 90 3c 64
+wait 1000
+midi USB 80 3c 00
+wait 1000
+midi TRS 91 40 7f
+wait 1000
+midi TRS 81 40 00
+wait 1000
+wavstop
+shot test9-idle.png

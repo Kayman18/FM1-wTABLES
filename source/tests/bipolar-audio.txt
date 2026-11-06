@@ -1,0 +1,33 @@
+wait 900
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 30
+tap ENV
+spin K3 -191
+spin K4 -127
+tap SEL
+spin K1 120
+wait 100
+wav bipolar-pitch.wav
+midi USB 90 30 7f
+wait 2500
+midi USB 80 30 00
+wait 4500
+wavstop
+tap HOME
+tap ENV
+tap ENV
+tap SEL
+spin K1 -120
+tap LFO
+spin K1 43
+spin K4 -1200
+wait 100
+wav bipolar-lfo.wav
+midi USB 90 30 7f
+wait 3000
+midi USB 80 30 00
+wait 4500
+wavstop

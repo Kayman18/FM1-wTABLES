@@ -1,0 +1,80 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+spin K1 90
+spin K4 90
+wait 30
+tap SEL
+shot test22-amp-shape-default.png
+spin K1 -127
+spin K2 -127
+wait 30
+shot test22-amp-shape-low.png
+wav shape-amp-low.wav
+midi USB 90 30 7f
+wait 1400
+midi USB 80 30 00
+wait 3200
+wavstop
+spin K1 127
+spin K2 127
+wait 30
+shot test22-amp-shape-high.png
+wav shape-amp-high.wav
+midi USB 90 30 7f
+wait 1400
+midi USB 80 30 00
+wait 3200
+wavstop
+tap SEL
+tap SEL
+spin K1 -127
+spin K4 -127
+wait 30
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 -64
+spin K4 -127
+wait 30
+spin K1 90
+spin K2 60
+spin K4 80
+wait 30
+tap SEL
+spin K1 120
+wait 30
+tap SEL
+shot test22-env2-shape-default.png
+spin K1 -127
+wait 30
+shot test22-env2-shape-low.png
+wav shape-env2-low.wav
+midi USB 90 30 7f
+wait 1400
+midi USB 80 30 00
+wait 3200
+wavstop
+spin K1 127
+wait 30
+shot test22-env2-shape-high.png
+wav shape-env2-high.wav
+midi USB 90 30 7f
+wait 1400
+midi USB 80 30 00
+wait 3200
+wavstop
+tap SEL
+shot test22-env2-adsr.png
+tap HOME

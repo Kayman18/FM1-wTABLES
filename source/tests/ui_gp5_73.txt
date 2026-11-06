@@ -1,0 +1,185 @@
+# TEST73 real UI events: model selection, conditional units, per-model cache.
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1500
+expect tables_ready 1
+expect reverb_model 3
+expect fx_reverb 0
+expect voice_limit 4
+midi 90 30 64
+midi 90 34 64
+midi 90 37 64
+midi 90 3b 64
+wait 200
+expect voices 4
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+spin K1 1
+expect fx_reverb 1
+spin K3 60
+expect reverb_time_ms 8000
+spin K4 40
+expect reverb_mix 65
+wait 1600
+shot clouds-selector73.png
+tap FX
+expect page 33
+spin K1 11
+spin K2 13
+spin K3 48
+spin K4 35
+expect reverb_size 81
+expect reverb_damping 63
+expect reverb_speed 73
+expect reverb_depth 55
+tap HOME
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+spin K2 -3
+expect reverb_model 0
+expect reverb_time_ms 50
+expect reverb_size 100
+expect reverb_damping 0
+expect reverb_speed 50
+expect reverb_depth 0
+expect reverb_mix 65
+spin K3 23
+expect reverb_time_ms 73
+wait 1600
+shot gp5-air-selector73.png
+tap FX
+expect page 33
+spin K1 -27
+spin K2 42
+spin K3 81
+spin K4 57
+expect reverb_size 73
+expect reverb_damping 42
+expect reverb_speed 131
+expect reverb_depth 57
+wait 1600
+shot gp5-air-tone73.png
+tap HOME
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+spin K2 3
+expect reverb_model 3
+expect reverb_time_ms 8000
+expect reverb_size 81
+expect reverb_damping 63
+expect reverb_speed 73
+expect reverb_depth 55
+expect reverb_mix 65
+spin K2 -3
+expect reverb_model 0
+expect reverb_time_ms 73
+expect reverb_size 73
+expect reverb_damping 42
+expect reverb_speed 131
+expect reverb_depth 57
+# GP5 percentage boundaries differ from the preserved Clouds ms limits.
+spin K3 -1000
+expect reverb_time_ms 0
+spin K3 1000
+expect reverb_time_ms 100
+tap FX
+expect page 33
+spin K1 -1000
+expect reverb_size 0
+spin K1 1000
+expect reverb_size 100
+spin K3 -1000
+expect reverb_speed 1
+spin K3 1000
+expect reverb_speed 500
+tap HOME
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+# Every choice is reachable by one detent; Clouds retains slot 3 and edits.
+spin K2 1
+expect reverb_model 1
+expect reverb_time_ms 50
+spin K2 1
+expect reverb_model 2
+expect reverb_time_ms 50
+spin K2 1
+expect reverb_model 3
+expect reverb_time_ms 8000
+spin K2 1
+expect reverb_model 4
+expect reverb_time_ms 50
+spin K2 1
+expect reverb_model 5
+expect reverb_depth 100
+spin K2 1
+expect reverb_model 6
+expect reverb_damping 25
+spin K2 1
+expect reverb_model 7
+expect reverb_speed 500
+spin K2 1
+expect reverb_model 8
+expect reverb_time_ms 50
+spin K2 1
+expect reverb_model 9
+expect reverb_damping 100
+spin K2 1
+expect reverb_model 10
+expect reverb_depth 35
+expect reverb_mix 65
+wait 80
+shot gp5-sweet-overlay73.png
+spin K2 100
+expect reverb_model 10
+spin K2 -100
+expect reverb_model 0
+expect reverb_time_ms 100
+expect reverb_speed 500
+spin K2 3
+expect reverb_model 3
+expect reverb_time_ms 8000
+spin K3 -1000
+expect reverb_time_ms 400
+spin K3 1000
+expect reverb_time_ms 30000
+# Zero mix and wake through the actual UI leave sounding voices active.
+spin K4 -100
+expect reverb_mix 0
+wait 400
+expect voices 4
+spin K4 65
+expect reverb_mix 65
+wait 300
+expect voices 4
+midi 80 30 00
+midi 80 34 00
+midi 80 37 00
+midi 80 3b 00

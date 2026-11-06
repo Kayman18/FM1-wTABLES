@@ -1,0 +1,42 @@
+wait 900
+spin K2 43
+tap ENV
+spin K1 30
+spin K2 -127
+spin K3 127
+spin K4 -127
+tap HOME
+tap FX
+spin K1 14
+spin K2 -100
+spin K3 1
+tap SEL
+spin K1 -70
+wait 800
+wav signed-filter-down.wav
+midi USB 90 30 7f
+wait 3000
+shot signed-amp-filter.png
+midi USB 80 30 00
+wait 700
+wavstop
+spin K1 140
+spin K2 -70
+wait 50
+wav signed-filter-up.wav
+midi USB 90 30 7f
+wait 3000
+midi USB 80 30 00
+wait 700
+wavstop
+tap SEL
+spin K1 -60
+wait 50
+shot signed-env2-overlay.png
+tap LFO
+spin K2 -60
+wait 50
+shot signed-lfo-wave-overlay.png
+spin K3 -80
+wait 50
+shot signed-lfo-filter-overlay.png

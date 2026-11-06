@@ -1,0 +1,24 @@
+wait 900
+tap ARP
+spin K1 12
+wait 100
+shot five-sixth-oct-overlay.png
+spin K1 1
+wait 100
+shot five-seventh-oct-overlay.png
+spin K1 1
+wait 100
+shot five-ninth-overlay.png
+wait 900
+shot five-chord-page.png
+tap SEL
+spin K1 200
+spin K3 -1
+wait 100
+shot five-strum-shape-overlay.png
+wait 900
+shot five-strum-page.png
+tap SEL
+spin K1 1
+wait 900
+shot five-arp-page.png

@@ -1,0 +1,42 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1200
+expect voice_limit 6
+shot test61-home-normal.png
+tap LFO
+expect page 6
+shot test61-lfo-depth-title.png
+wait 900
+shot test61-lfo-depth-normal.png
+tap LFO
+expect page 9
+shot test61-lfo-phase-title.png
+wait 900
+shot test61-lfo-phase-normal.png
+tap LFO
+expect page 30
+wait 900
+shot test61-matrix-before.png
+spin K3 6
+wait 60
+expect matrix_dest 6
+expect matrix_wave_override 1
+shot test61-wave-depth-matrix-overlay.png
+wait 900
+shot test61-wave-depth-matrix-normal.png
+spin K4 50
+expect matrix_amount 50
+spin K3 -6
+expect matrix_dest 0
+expect matrix_wave_override 0
+spin PRESET 1
+wait 60
+expect page 29
+wait 900
+shot test61-presets-normal.png
+spin PRESET 38
+wait 60
+expect preset 39
+shot test61-last-preset-title.png
+wait 900
+shot test61-last-preset-normal.png

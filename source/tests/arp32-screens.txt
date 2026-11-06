@@ -1,0 +1,18 @@
+wait 900
+tap ARP
+tap SEL
+tap SEL
+spin K1 8
+wait 100
+shot arp-random-overlay.png
+spin K1 1
+wait 100
+shot arp-no-repeat-overlay.png
+spin K1 1
+wait 100
+shot arp-shuffle-overlay.png
+wait 900
+shot arp32-page.png
+tap SEL
+wait 900
+shot arp32-chord-return.png

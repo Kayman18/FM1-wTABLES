@@ -1,0 +1,69 @@
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+shot test22-unison-default.png
+wav unison-single.wav
+midi USB 90 3c 7f
+wait 4000
+shot test22-unison-single.png
+midi USB 80 3c 00
+wait 300
+wavstop
+spin K1 1
+spin K2 40
+spin K4 100
+wait 50
+wav unison-two.wav
+midi USB 90 3c 7f
+wait 4000
+shot test22-unison-two.png
+midi USB 80 3c 00
+wait 300
+wavstop
+spin K1 1
+wait 50
+wav unison-four.wav
+midi USB 90 3c 7f
+wait 4000
+shot test22-unison-four.png
+midi USB 80 3c 00
+wait 300
+wavstop
+spin K2 -100
+spin K4 -100
+wait 50
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K2 50
+wait 100
+tap SEL
+tap SEL
+wav unison-wave-zero.wav
+midi USB 90 3c 7f
+wait 4000
+shot test22-unison-wave-zero.png
+midi USB 80 3c 00
+wait 300
+wavstop
+spin K3 80
+wait 50
+wav unison-wave-wide.wav
+midi USB 90 3c 7f
+wait 4000
+shot test22-unison-wave-wide.png
+midi USB 80 3c 00
+wait 300
+wavstop
+tap GLO
+shot test22-main.png

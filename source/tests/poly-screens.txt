@@ -1,0 +1,51 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+tap HOME
+spin K2 -100
+spin K4 25
+master 4096
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+wait 100
+tap HOME
+wav chord.wav
+midi USB 90 3c 7f
+midi USB 90 40 7f
+midi TRS 90 43 7f
+midi TRS 91 48 7f
+wait 1000
+shot test22-four-notes.png
+midi USB 80 40 00
+wait 700
+shot test22-three-notes.png
+midi USB 90 41 7f
+wait 700
+midi USB 90 3e 7f
+wait 700
+shot test22-stolen-note.png
+midi USB 80 3c 00
+midi USB 80 3e 00
+midi USB 80 41 00
+midi TRS 80 43 00
+midi TRS 81 48 00
+wait 1000
+wavstop
+shot test22-released.png
+key 7 down
+key 11 down
+key 14 down
+wait 1000
+shot test22-panel-chord.png
+tap ENV
+wait 100
+shot test22-envelope-chord.png
+key 7 up
+key 11 up
+key 14 up
+wait 1000

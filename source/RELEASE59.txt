@@ -1,0 +1,19 @@
+TEST59 v0.59.0 — large panels, battery, sequencer-synced delay
+
+Built on TEST58 with six voices and balanced dual-core voice rendering still enabled.
+
+UI: Normal pages use large amber values in four 2x2 tiles. The status strip shows transport, active/maximum voices, and battery. CPU/XRUN clutter and normal-page graphs are replaced by larger controls. Preset names remain visible. Matrix pages retain their two routes with output/rate and destination/amount. Existing full-screen knob/button overlays and both 16-note editor pages remain.
+
+Battery: existing platform ADC channel 3 battery-divider reader, with Q8 smoothing. Percentage is a voltage estimate, not a fuel gauge. USB means a configured awake USB host; a power-only charger cannot be identified separately. Unknown readings display --. Physical battery discharge behavior needs hardware testing.
+
+Delay: FX cycles to DELAY then DELAY CLOCK. K1 FREE/SYNC, K2 requested division (1/32, 1/16, 1/8, 1/4), K3 shared internal sequencer BPM (40–240), K4 free delay time in milliseconds. On the main Delay page, K2 changes division when synced, time otherwise. Sync defaults ON at 1/8; delay itself still follows the instrument's OFF/stereo/ping-pong setting. Sync selection survives preset changes. Internal Bloom/arp tempo is followed while running or stopped; this version does not measure incoming external MIDI clock for delay sync. Existing reverb/delay mutual exclusion remains.
+
+The unchanged delay buffer allows 550 ms. Requested divisions exceeding that halve repeatedly until they fit, retaining rhythmic alignment. Footer shows the effective division and time: at 40 BPM, requested 1/4 becomes effective 1/16 (375 ms). No audio RAM was added. Tap changes use the existing crossfade.
+
+Validation: sanitizer tests cover all divisions at every BPM from 40 to 240, exact stereo/ping-pong impulse timing, live tempo changes, free time, preset retention, 32 OFF steps and density, all six audible voice slots, and 3200 blocks of identical single/dual audio while changing sync/tempo/presets/effects. UI scripts cover sync controls, all page groups, and note editing; rendered screens visually inspected. Full image encryption/CRC roundtrip verified. Physical FM1 CPU, battery and sound testing remain.
+
+App 522944 bytes / 581564. Static RAM 85880 / 98304. Pool 311812 / 344064. Identity FM-1_13005900.
+Build with JIELI_TOOLCHAIN pointing to the Jieli toolchain: bash fm1/build.sh --release 0.59.0
+Host: bash fm1/build.sh --release 0.59.0 --host
+Tests: bash tests/run59.sh
+Package: python3 tools/make_mflasher59.py BASE_FULL.bin OUTPUT.bin

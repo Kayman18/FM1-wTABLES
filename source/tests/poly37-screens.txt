@@ -1,0 +1,32 @@
+wait 900
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 4
+wait 100
+shot poly37-limit-overlay.png
+spin K2 7
+wait 100
+shot poly37-eight-overlay.png
+wait 900
+shot poly37-voice-page.png
+tap HOME
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+wait 900
+shot poly37-unison-page.png
+spin K1 -5
+wait 100
+shot poly37-three-overlay.png
+tap ARP
+spin K1 14
+tap PLAY
+wait 900
+shot poly37-ninth.png

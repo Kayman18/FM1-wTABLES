@@ -1,0 +1,18 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+tap ARP
+spin K1 6
+spin K3 11
+wait 900
+wav range38-low-chord.wav
+midi TRS 90 00 7f
+wait 4000
+midi TRS 80 00 00
+wait 500
+wavstop

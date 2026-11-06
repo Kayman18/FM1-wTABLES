@@ -1,0 +1,34 @@
+wait 900
+tap ARP
+tap SEL
+tap SEL
+spin K1 1
+tap SEL
+wait 900
+shot clock-panel-internal.png
+spin K1 1
+wait 100
+shot clock-usb-overlay.png
+wait 900
+shot clock-wait-page.png
+midi USB fa 00 00
+midi USB f8 00 00
+wait 600
+shot clock-running-page.png
+wait 500
+shot clock-timeout-page.png
+spin K1 1
+wait 100
+shot clock-trs-overlay.png
+spin K2 12
+wait 100
+shot clock-tempo-overlay.png
+spin K3 1
+wait 100
+shot clock-octave-overlay.png
+spin K4 20
+wait 100
+shot clock-gate-overlay.png
+tap SEL
+wait 900
+shot clock-return-chord.png

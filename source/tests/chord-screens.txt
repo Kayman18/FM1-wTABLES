@@ -1,0 +1,26 @@
+wait 900
+tap ARP
+wait 100
+shot chord-panel.png
+spin K1 6
+wait 100
+shot chord-shape.png
+spin K2 8
+wait 100
+shot chord-scale.png
+spin K3 -7
+wait 100
+shot chord-key.png
+spin K4 2
+wait 100
+shot chord-inversion.png
+wait 900
+shot chord-page.png
+spin K2 -8
+spin K3 7
+spin K4 -2
+midi USB 90 30 7f
+wait 600
+shot chord-playing.png
+midi USB 80 30 00
+wait 600

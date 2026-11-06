@@ -1,0 +1,16 @@
+wait 900
+press OCT-
+press OCT+
+wait 100
+shot boot-short-hold.png
+release OCT-
+wait 60
+shot boot-short-cancel.png
+release OCT+
+wait 750
+shot boot-short-return.png
+press OCT+
+wait 5200
+shot boot-single-long.png
+release OCT+
+wait 750

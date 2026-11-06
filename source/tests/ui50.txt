@@ -1,0 +1,116 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+tap LFO
+tap LFO
+tap LFO
+expect page 30
+expect matrix_route 1
+wait 90
+expect overlay_on 1
+shot matrix50-page1-overlay.png
+wait 800
+expect overlay_on 0
+shot matrix50-page1.png
+spin K2 1
+wait 90
+expect overlay_kind 2
+shot matrix50-source.png
+spin K3 3
+expect matrix_dest 3
+wait 90
+shot matrix50-wavepos.png
+spin K4 40
+wait 90
+shot matrix50-amount.png
+spin K1 100
+wait 90
+expect overlay_kind 1
+shot matrix50-page1-route.png
+expect matrix_route 2
+spin K3 4
+spin K4 -25
+expect matrix_dest 4
+wait 90
+shot matrix50-route2-overlay.png
+wait 800
+shot matrix50-page1-routed.png
+tap LFO
+expect page 31
+expect matrix_route 3
+wait 90
+expect overlay_on 1
+shot matrix50-page2-overlay.png
+wait 800
+shot matrix50-page2.png
+spin K3 5
+wait 90
+expect overlay_kind 3
+shot matrix50-page2-pitchwave.png
+expect matrix_dest 5
+spin K4 30
+wait 90
+shot matrix50-page2-amount.png
+spin K2 -3
+wait 90
+shot matrix50-page2-source.png
+spin K1 1
+wait 90
+expect overlay_kind 1
+shot matrix50-page2-route.png
+expect matrix_route 4
+spin K3 1
+spin K4 10
+wait 90
+shot matrix50-page2-cutoff.png
+spin K1 100
+expect matrix_route 4
+wait 800
+shot matrix50-page2-routed.png
+tap LFO
+expect page 6
+tap LFO
+tap LFO
+expect page 30
+expect matrix_route 1
+expect matrix_dest 3
+expect matrix_amount 40
+spin K1 1
+expect matrix_dest 4
+expect matrix_amount -25
+tap LFO
+spin K1 -100
+expect matrix_route 3
+expect matrix_dest 5
+expect matrix_amount 30
+spin PRESET 100
+expect preset 39
+wait 90
+shot preset50-last.png
+spin PRESET -38
+expect preset 1
+wait 90
+shot preset50-koto.png
+tap LFO
+tap LFO
+tap LFO
+tap LFO
+expect page 31
+expect matrix_dest 5
+
+press OCT+
+wait 90
+expect page 31
+expect overlay_on 1
+shot matrix50-page2-octave.png
+release OCT+
+wait 800
+press OCT-
+press OCT+
+wait 300
+shot matrix50-page2-combo.png
+release OCT+
+release OCT-
+wait 900
+expect page 31
+shot matrix50-page2-restored.png

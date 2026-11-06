@@ -1,0 +1,32 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+tap SEQ
+spin K1 1
+wait 900
+shot bloom39-main.png
+tap PLAY
+wait 1600
+shot bloom39-running.png
+spin K4 40
+wait 100
+shot bloom39-mutation-overlay.png
+tap SEL
+wait 900
+shot bloom39-scale.png
+spin K1 1
+wait 100
+shot bloom39-scale-overlay.png
+tap REC
+wait 100
+shot bloom39-reseed-overlay.png
+tap SAVE
+wait 900
+shot bloom39-restored.png
+tap PLAY
+wait 500

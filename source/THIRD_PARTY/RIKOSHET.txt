@@ -1,0 +1,7 @@
+Rikoshet Lite is adapted from SHLabs Rikoshet PingPong, licensed under GNU General Public License version 3.
+
+Original project: https://github.com/shlabs-audio/rikoshet
+Original file: src/PingPong.cpp
+Modified DSP implementation: fm1/app/pw_delay.c and fm1/app/pw_delay.h
+Changes: 750ms maximum, 22.05kHz internal sample rate, static shared 32-bit stereo float buffer, half-band anti-alias decimation, stereo mixing and crossfeed, low/high-cut filtering, smoothing/interpolation; all VCV UI and other desktop dependencies removed.
+See GPL-3.0.txt for the license. Preserve the license and attribution when redistributing modified firmware/source.

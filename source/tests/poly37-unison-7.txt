@@ -1,0 +1,31 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 4
+spin K2 6
+spin K3 40
+tap HOME
+tap GLO
+tap SEL
+tap SEL
+spin K3 1
+spin K4 100
+wait 900
+wav poly37-unison-7.wav
+midi USB 90 3c 7f
+wait 4000
+midi USB 80 3c 00
+wait 500
+wavstop

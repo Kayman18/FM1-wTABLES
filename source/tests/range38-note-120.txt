@@ -1,0 +1,15 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+wait 900
+wav range38-note-120.wav
+midi USB 90 78 7f
+wait 4000
+midi USB 80 78 00
+wait 500
+wavstop

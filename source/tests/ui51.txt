@@ -1,0 +1,80 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 15
+spin K1 2
+tap FX
+expect page 17
+spin K1 2
+expect fx_reverb 0
+tap FX
+expect page 32
+wait 90
+shot reverb51-panel-overlay.png
+spin K1 1
+expect fx_reverb 1
+wait 90
+shot reverb51-effect-overlay.png
+spin K2 -3
+expect reverb_model 0
+wait 90
+shot reverb51-model-overlay.png
+spin K3 10
+wait 90
+shot reverb51-decay-overlay.png
+spin K4 10
+expect reverb_mix 35
+wait 90
+shot reverb51-mix-overlay.png
+wait 800
+shot reverb51-main.png
+tap FX
+expect page 33
+wait 90
+shot reverb51-tone-overlay.png
+spin K1 5
+wait 90
+shot reverb51-size-overlay.png
+spin K2 10
+wait 90
+shot reverb51-damp-overlay.png
+spin K3 5
+wait 90
+shot reverb51-rate-overlay.png
+spin K4 10
+wait 90
+shot reverb51-depth-overlay.png
+wait 800
+shot reverb51-tone.png
+tap FX
+expect page 16
+tap FX
+expect page 2
+spin PRESET 1
+expect fx_reverb 1
+expect reverb_model 0
+expect reverb_mix 35
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 17
+spin K1 1
+expect fx_reverb 0
+tap FX
+expect page 32
+spin K1 1
+expect fx_reverb 1
+press OCT-
+press OCT+
+wait 300
+shot reverb51-boot-combo.png
+release OCT+
+release OCT-
+wait 900
+expect page 32

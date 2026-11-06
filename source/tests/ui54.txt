@@ -1,0 +1,50 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+tap SEQ
+spin K1 1
+tap PLAY
+expect playing 1
+tap SEQ
+tap SEQ
+tap SEQ
+expect page 35
+expect bloom_ratchet 0
+expect bloom_ratchet_chance 100
+spin K1 5
+expect bloom_ratchet 5
+wait 100
+shot ratchet54-overlay.png
+spin K2 -53
+expect bloom_ratchet_chance 47
+wait 100
+shot chance54-overlay.png
+wait 800
+shot ratchet54.png
+spin K3 20
+spin K4 120
+spin PRESET 40
+expect playing 1
+expect bloom_ratchet 5
+expect bloom_ratchet_chance 47
+tap SEQ
+tap SEQ
+tap SEQ
+tap SEQ
+expect page 35
+tap SEQ
+expect page 27
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+spin K1 1
+spin K4 75
+wait 100
+shot reverb54-overlay.png
+wait 800
+tap PLAY
+expect playing 0

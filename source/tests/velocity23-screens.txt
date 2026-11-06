@@ -1,0 +1,22 @@
+wait 900
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+wait 800
+shot velocity-linear.png
+spin K3 1
+wait 80
+shot velocity-fixed-overlay.png
+spin K3 1
+wait 80
+shot velocity-hard-overlay.png
+wait 800
+shot velocity-hard.png
+spin K3 1
+wait 80
+shot velocity-soft-overlay.png
+wait 800
+shot velocity-soft.png

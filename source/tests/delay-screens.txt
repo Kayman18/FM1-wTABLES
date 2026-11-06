@@ -1,0 +1,70 @@
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+tap GLO
+tap SEL
+tap SEL
+spin K3 1
+spin K4 100
+wait 50
+tap SEL
+tap SEL
+shot test22-delay-default.png
+spin K2 -80
+spin K3 -50
+spin K4 65
+wait 50
+wav delay-off.wav
+midi USB 90 30 7f
+wait 15
+midi USB 80 30 00
+wait 1400
+wavstop
+shot test22-delay-off.png
+spin K1 1
+wait 50
+wav delay-stereo.wav
+midi USB 90 30 7f
+wait 15
+midi USB 80 30 00
+wait 1400
+wavstop
+shot test22-delay-stereo.png
+spin K1 1
+wait 50
+wav delay-ping.wav
+midi USB 90 30 7f
+wait 15
+midi USB 80 30 00
+wait 1400
+wavstop
+shot test22-delay-ping.png
+spin K3 50
+wait 50
+wav delay-feedback.wav
+midi USB 90 30 7f
+wait 15
+midi USB 80 30 00
+wait 1400
+wavstop
+shot test22-delay-feedback.png
+spin K2 90
+spin K3 -50
+spin K1 -2
+wait 50
+spin K1 2
+wait 50
+wav delay-max.wav
+midi USB 90 30 7f
+wait 15
+midi USB 80 30 00
+wait 1400
+wavstop
+shot test22-delay-max.png
+tap GLO
+shot test22-main.png

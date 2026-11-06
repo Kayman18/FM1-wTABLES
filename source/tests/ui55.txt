@@ -1,0 +1,56 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+tap SEQ
+spin K2 16
+expect bloom_length 32
+spin K1 1
+tap PLAY
+expect playing 1
+tap SEQ
+spin K1 -1
+tap SEQ
+tap SEQ
+tap SEQ
+expect page 36
+expect note_row 0
+spin SELECT 1
+expect note_row 1
+spin K1 1
+spin K2 2
+spin K3 3
+spin K4 4
+wait 100
+shot notes55-first-live.png
+wait 800
+shot notes55-first.png
+tap SEQ
+expect page 37
+spin SELECT 10
+expect note_row 3
+spin K4 -60
+expect seed31 0
+spin K4 2
+expect seed31 4
+wait 100
+shot notes55-second-live.png
+wait 800
+shot notes55-second.png
+expect playing 1
+spin PRESET 40
+expect playing 1
+expect bloom_length 32
+expect seed31 4
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+expect page 23
+spin K1 10
+expect voice_limit 4
+spin K2 10
+wait 100
+shot voices55-limit.png
+tap PLAY
+expect playing 0

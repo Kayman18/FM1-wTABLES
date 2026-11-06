@@ -1,0 +1,52 @@
+# TEST74: actual K4 label and dry/half/wet endpoints with sounding notes.
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1500
+expect tables_ready 1
+midi 90 30 64
+midi 90 34 64
+midi 90 37 64
+midi 90 3b 64
+wait 200
+expect voices 4
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 32
+spin K2 -1
+expect reverb_model 2
+spin K1 1
+expect fx_reverb 1
+spin K4 -100
+expect reverb_mix 0
+wait 1600
+expect voices 4
+shot gp5-dry0-test74.png
+spin K4 50
+expect reverb_mix 50
+wait 1600
+expect voices 4
+shot gp5-half50-test74.png
+spin K4 50
+expect reverb_mix 100
+wait 1600
+expect voices 4
+shot gp5-wet100-test74.png
+spin K4 1
+expect reverb_mix 100
+wait 80
+shot gp5-wet100-overlay-test74.png
+spin K2 1
+expect reverb_model 3
+expect reverb_mix 100
+wait 2900
+shot clouds-mix-label-test74.png
+midi 80 30 00
+midi 80 34 00
+midi 80 37 00
+midi 80 3b 00

@@ -1,0 +1,10 @@
+wait 900
+tap GLO
+spin K1 60
+wait 900
+wav tuning-wide.wav
+midi USB 90 30 7f
+wait 800
+midi USB 80 30 00
+wait 1500
+wavstop

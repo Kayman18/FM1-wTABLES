@@ -1,0 +1,22 @@
+wait 900
+tap ENV
+tap ENV
+spin K3 -191
+wait 50
+shot bipolar-sustain.png
+press ENV
+release ENV
+press ENV
+wait 50
+shot bipolar-envelope.png
+release ENV
+tap SEL
+spin K1 60
+wait 50
+shot bipolar-pitch-route.png
+tap LFO
+spin K4 -1200
+wait 50
+shot bipolar-lfo-pitch.png
+wait 750
+shot bipolar-lfo-panel.png

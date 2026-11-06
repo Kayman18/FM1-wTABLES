@@ -1,0 +1,23 @@
+wait 900
+tap ARP
+tap SEL
+tap SEL
+wait 100
+shot arp-panel.png
+spin K1 3
+wait 100
+shot arp-mode.png
+spin K2 17
+wait 100
+shot arp-tempo.png
+spin K3 2
+wait 100
+shot arp-octaves.png
+spin K4 20
+wait 100
+shot arp-gate.png
+wait 800
+shot arp-page.png
+tap SEL
+wait 800
+shot arp-return-chord.png

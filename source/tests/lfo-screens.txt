@@ -1,0 +1,85 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+wait 30
+tap HOME
+spin K2 50
+wait 30
+tap LFO
+spin K1 -40
+wait 30
+spin K1 83
+wait 30
+shot test22-lfo-zero.png
+wav lfo-dry.wav
+tap PLAY
+wait 2000
+wavstop
+tap PLAY
+wait 1000
+spin K2 25
+wait 30
+wav lfo-wave.wav
+tap PLAY
+wait 3000
+wavstop
+shot test22-lfo-wave.png
+tap PLAY
+wait 1000
+spin K2 -25
+wait 30
+tap HOME
+spin K2 -100
+wait 30
+tap LFO
+spin K4 100
+wait 30
+wav lfo-pitch.wav
+tap PLAY
+wait 3000
+wavstop
+shot test22-lfo-pitch.png
+tap PLAY
+wait 1000
+spin K4 -100
+spin K3 24
+wait 30
+tap HOME
+spin K2 43
+wait 30
+tap FX
+spin K1 -24
+spin K3 1
+wait 30
+tap LFO
+wav lfo-filter.wav
+tap PLAY
+wait 3000
+wavstop
+shot test22-lfo-filter.png
+tap PLAY
+wait 1000
+spin K1 -83
+wait 30
+shot test22-lfo-stopped.png
+spin K1 -83
+wait 30
+shot test22-lfo-reverse.png
+key 7 down
+wait 300
+key 11 down
+wait 80
+shot test22-lfo-two-notes.png
+key 7 up
+key 11 up
+wait 2000
+shot test22-lfo-idle.png

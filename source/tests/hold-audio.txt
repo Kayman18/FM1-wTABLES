@@ -1,0 +1,29 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K4 1
+wait 100
+shot hold-knob-on.png
+wait 800
+shot hold-page-on.png
+wav hold.wav
+midi USB 90 30 7f
+wait 300
+midi USB 80 30 00
+wait 1000
+spin K4 -1
+wait 600
+wavstop
+shot hold-knob-off.png
+wait 800
+shot hold-page-off.png

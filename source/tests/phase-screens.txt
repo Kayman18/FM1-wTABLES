@@ -1,0 +1,74 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+wait 30
+tap HOME
+tap LFO
+spin K1 43
+spin K4 100
+wait 100
+tap SEL
+shot test22-phase-keep.png
+spin K1 1
+wait 100
+shot test22-phase-poly.png
+wav phase-poly1.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+wav phase-poly2.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+midi USB 80 30 00
+wait 1000
+spin K1 2
+wait 100
+shot test22-phase-off.png
+wav phase-off1.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+wav phase-off2.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+midi USB 80 30 00
+wait 1000
+spin K1 -1
+wait 100
+wav phase-mono1.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+midi USB 80 30 00
+wait 1000
+wav phase-mono2.wav
+midi USB 90 30 7f
+wait 600
+wavstop
+midi USB 80 30 00
+wait 1000
+spin K2 90
+wait 100
+midi USB 90 30 7f
+midi USB 90 34 7f
+midi USB 90 37 7f
+midi USB 90 3b 7f
+wait 500
+shot test22-phase-spread.png
+tap SEL
+shot test22-lfs-depths.png
+midi USB b0 7b 00
+wait 1000
+tap SEL
+shot test22-phase-idle-clock.png

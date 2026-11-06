@@ -1,0 +1,31 @@
+wait 900
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+wait 100
+shot pedal-panel.png
+spin K1 1
+wait 100
+shot pedal-synth.png
+spin K1 1
+wait 100
+shot pedal-piano.png
+spin K2 -20
+wait 100
+shot pedal-amp-release.png
+spin K3 20
+wait 100
+shot pedal-env2-release.png
+spin K4 -10
+wait 100
+shot pedal-level.png
+wait 800
+shot pedal-page.png
+tap SEL
+tap SEL
+wait 800
+shot pedal-return-performance.png

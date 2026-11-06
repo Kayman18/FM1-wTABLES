@@ -1,0 +1,18 @@
+wait 900
+spin K1 -48
+wait 100
+shot range38-zero-overlay.png
+tap PLAY
+wait 900
+shot range38-zero-playing.png
+tap GLO
+tap SEL
+wait 900
+shot range38-low-auto.png
+tap HOME
+spin K1 127
+wait 100
+shot range38-high-overlay.png
+wait 900
+shot range38-high-playing.png
+tap PLAY

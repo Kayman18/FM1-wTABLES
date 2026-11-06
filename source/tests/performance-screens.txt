@@ -1,0 +1,81 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+tap GLO
+shot test22-performance-default.png
+wav performance-bend.wav
+midi USB 90 30 7f
+wait 700
+midi USB e0 7f 7f
+wait 700
+midi USB e0 00 00
+wait 700
+midi USB e0 00 40
+wait 700
+midi USB 80 30 00
+wait 300
+wavstop
+wav performance-pedal.wav
+midi USB 90 30 7f
+wait 300
+midi USB b0 40 7f
+midi USB 80 30 00
+wait 700
+shot test22-performance-pedal.png
+midi USB b0 40 00
+wait 300
+wavstop
+spin K1 12
+spin K2 50
+wait 30
+shot test22-performance-tuned.png
+wav performance-tune.wav
+midi USB 90 30 7f
+wait 1200
+midi USB 80 30 00
+wait 300
+wavstop
+spin K1 -12
+spin K2 -50
+wait 30
+wav performance-octave.wav
+key 7 down
+wait 600
+tap OCT+
+shot test22-performance-octave.png
+wait 600
+key 7 up
+wait 200
+key 7 down
+wait 600
+key 7 up
+wait 200
+tap OCT-
+key 7 down
+wait 600
+key 7 up
+wait 200
+wavstop
+spin K3 10
+wait 30
+wav performance-range.wav
+midi TRS e0 7f 7f
+midi TRS 90 30 7f
+wait 1200
+midi TRS 80 30 00
+wait 300
+wavstop
+shot test22-performance-range.png
+tap GLO
+shot test22-main.png

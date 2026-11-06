@@ -1,0 +1,33 @@
+wait 900
+tap GLO
+spin K1 60
+wait 100
+shot tuning-coarse-60.png
+spin K3 46
+wait 100
+shot tuning-bend-48.png
+wait 800
+shot tuning-wide-page.png
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+wait 100
+shot budget-panel.png
+spin K1 -1
+wait 100
+shot budget-limit.png
+spin K2 2
+wait 100
+shot budget-unison.png
+spin K3 20
+wait 100
+shot budget-detune.png
+wait 800
+shot budget-page.png
+tap SEL
+wait 800
+shot budget-return-performance.png

@@ -1,0 +1,43 @@
+wait 900
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+wait 900
+shot gain36-page.png
+spin K1 -40
+wait 100
+shot gain36-mute.png
+spin K1 64
+wait 100
+shot gain36-boost.png
+spin K2 1
+wait 100
+shot gain36-source.png
+spin K3 -37
+wait 100
+shot gain36-return-mute.png
+spin K3 37
+wait 100
+shot gain36-return.png
+spin K4 -55
+wait 100
+shot gain36-level.png
+wait 900
+shot gain36-source-page.png
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 2
+spin K4 -3
+wait 100
+shot gain36-delay-return.png
+wait 900
+shot gain36-delay-page.png

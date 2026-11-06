@@ -1,0 +1,29 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 500
+shot stopped.png
+master 3072
+wav audition.wav
+tap PLAY
+wait 1000
+shot playing.png
+shot wave-min.png
+spin K2 100
+wait 1000
+shot wave-max.png
+wavstop
+spin K2 -100
+wait 500
+spin K3 1
+wait 500
+shot strings.png
+spin K2 100
+wait 500
+shot strings-max.png
+tap PLAY
+wait 1000
+shot stopped-after.png

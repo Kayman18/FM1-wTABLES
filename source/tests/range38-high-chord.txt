@@ -1,0 +1,17 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+tap ARP
+spin K1 14
+wait 900
+wav range38-high-chord.wav
+midi TRS 90 78 7f
+wait 2000
+midi TRS 80 78 00
+wait 500
+wavstop

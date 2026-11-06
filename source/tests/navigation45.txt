@@ -1,0 +1,167 @@
+wait 900
+tap HOME
+tap GLO
+expect page 13
+tap GLO
+expect page 14
+tap GLO
+expect page 15
+tap GLO
+expect page 16
+tap GLO
+expect page 17
+tap GLO
+expect page 18
+tap GLO
+expect page 22
+tap GLO
+expect page 23
+tap GLO
+expect page 26
+tap GLO
+expect page 13
+tap GLO
+expect page 14
+tap GLO
+expect page 15
+tap GLO
+expect page 16
+tap GLO
+expect page 17
+tap GLO
+expect page 18
+tap GLO
+expect page 22
+tap GLO
+expect page 23
+tap GLO
+expect page 26
+tap GLO
+expect page 13
+tap GLO
+tap FX
+expect page 2
+tap FX
+expect page 3
+tap FX
+expect page 5
+tap FX
+expect page 2
+tap FX
+expect page 3
+tap FX
+expect page 5
+tap FX
+expect page 2
+tap GLO
+tap LFO
+expect page 6
+tap LFO
+expect page 9
+tap LFO
+expect page 6
+tap LFO
+expect page 9
+tap LFO
+expect page 6
+tap GLO
+tap EDIT
+expect page 1
+tap EDIT
+expect page 11
+tap EDIT
+expect page 19
+tap EDIT
+expect page 1
+tap EDIT
+expect page 11
+tap EDIT
+expect page 19
+tap EDIT
+expect page 1
+tap GLO
+tap ENV
+expect page 1
+tap ENV
+expect page 11
+tap ENV
+expect page 19
+tap ENV
+expect page 4
+tap ENV
+expect page 10
+tap ENV
+expect page 12
+tap ENV
+expect page 1
+tap ENV
+expect page 11
+tap ENV
+expect page 19
+tap ENV
+expect page 4
+tap ENV
+expect page 10
+tap ENV
+expect page 12
+tap ENV
+expect page 1
+tap GLO
+tap ARP
+expect page 20
+tap ARP
+expect page 21
+tap ARP
+expect page 24
+tap ARP
+expect page 25
+tap ARP
+expect page 20
+tap ARP
+expect page 21
+tap ARP
+expect page 24
+tap ARP
+expect page 25
+tap ARP
+expect page 20
+tap GLO
+tap SEQ
+expect page 27
+tap SEQ
+expect page 28
+tap SEQ
+expect page 27
+tap SEQ
+expect page 28
+tap SEQ
+expect page 27
+tap GLO
+tap HOME
+expect page 0
+tap HOME
+expect page 7
+tap HOME
+expect page 8
+tap HOME
+expect page 0
+tap HOME
+expect page 7
+tap HOME
+expect page 8
+tap HOME
+expect page 0
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+expect page 23
+tap REC
+expect dual_enabled 0
+tap REC
+expect dual_enabled 1
+shot direct45-global.png

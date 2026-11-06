@@ -1,0 +1,47 @@
+wait 900
+tap SEQ
+spin K1 1
+tap PLAY
+wait 100
+expect playing 1
+expect bloom_mode 1
+spin PRESET 2
+expect preset 2
+expect playing 1
+expect bloom_mode 1
+expect voice_limit 4
+wait 300
+tap OCT+
+expect panel_octave 1
+shot live43-octave.png
+wait 300
+spin PRESET 6
+expect preset 8
+expect playing 1
+expect bloom_mode 1
+tap OCT-
+expect panel_octave 0
+spin PRESET -100
+expect preset 0
+expect playing 1
+expect bloom_mode 1
+tap PLAY
+expect playing 0
+
+tap ARP
+tap SEL
+tap SEL
+spin K1 1
+tap PLAY
+wait 200
+expect arp_mode 1
+expect playing 1
+spin PRESET 2
+expect arp_mode 1
+expect playing 1
+tap OCT+
+expect panel_octave 1
+wait 300
+spin PRESET 6
+expect playing 1
+expect arp_mode 1

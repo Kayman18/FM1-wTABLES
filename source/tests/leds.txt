@@ -1,0 +1,132 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 100
+leds
+tap FX
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap ENV
+leds
+tap ENV
+leds
+tap EDIT
+leds
+press SAVE
+wait 30
+leds
+release SAVE
+wait 30
+leds
+press PLAY
+wait 30
+leds
+release PLAY
+wait 30
+leds
+key 0 down
+wait 30
+leds
+tap LFO
+leds
+tap LFO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap LFO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap LFO
+leds
+
+tap ENV
+leds
+tap ENV
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap HOME
+leds
+tap ENV
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap ENV
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap HOME
+leds
+tap GLO
+leds
+tap OCT+
+leds
+tap OCT-
+leds
+tap GLO
+leds
+tap GLO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap GLO
+leds
+tap GLO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap GLO
+leds
+tap GLO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap GLO
+leds
+tap GLO
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap SEL
+leds
+tap GLO
+leds

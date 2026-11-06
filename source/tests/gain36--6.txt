@@ -1,0 +1,25 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 -6
+spin K4 -65
+wait 900
+wav gain36--6.wav
+midi USB 90 30 7f
+wait 450
+midi USB 80 30 00
+wait 500
+wavstop

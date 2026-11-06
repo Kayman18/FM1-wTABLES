@@ -1,0 +1,45 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+tap ENV
+tap ENV
+tap ENV
+expect page 19
+spin K1 2
+expect trigger_mode 2
+wait 100
+shot drone53-overlay.png
+wait 800
+shot drone53.png
+tap PLAY
+expect playing 0
+tap SEQ
+expect page 27
+spin K1 1
+tap PLAY
+expect playing 1
+tap SEQ
+tap SEQ
+expect page 34
+spin K1 7
+expect bloom_branches 7
+wait 100
+shot branches53-overlay.png
+spin K2 127
+expect bloom_path 127
+wait 100
+shot path53-overlay.png
+wait 800
+shot branches53.png
+spin PRESET 40
+expect playing 1
+expect bloom_branches 7
+expect bloom_path 127
+tap PLAY
+expect playing 0
+tap SEQ
+tap SEQ
+tap SEQ
+expect page 34
+tap SEQ
+expect page 27

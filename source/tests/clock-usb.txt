@@ -1,0 +1,215 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap ARP
+tap SEL
+tap SEL
+spin K1 1
+tap SEL
+spin K1 1
+wait 900
+shot clock-usb-page.png
+wav clock-usb.wav
+midi USB 90 30 7f
+midi TRS 90 34 7f
+midi USB 90 37 7f
+midi USB fa 00 00
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 16
+midi TRS fc 00 00
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB f8 00 00
+wait 18
+midi USB fc 00 00
+wait 600
+wavstop

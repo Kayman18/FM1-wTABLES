@@ -1,0 +1,10 @@
+wait 900
+spin PRESET 15
+expect preset 15
+wait 900
+wav preset41-15.wav
+tap PLAY
+wait 4500
+tap PLAY
+wait 1800
+wavstop

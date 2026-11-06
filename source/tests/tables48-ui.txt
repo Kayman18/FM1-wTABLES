@@ -1,0 +1,10 @@
+wait 500
+expect tables_ready 0
+shot tables48-missing.png
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 500
+expect tables_ready 1
+expect tables_bank 0
+expect tables_busy 0
+shot tables48-ready.png

@@ -1,0 +1,120 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+wait 30
+tap HOME
+tap SEL
+tap SEL
+shot test22-tracking-zero.png
+midi USB 90 30 20
+wait 200
+wav tracking-dry-soft.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+spin K1 100
+wait 30
+shot test22-velocity-wave.png
+midi USB 90 30 20
+wait 200
+wav tracking-wave-soft.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+midi USB 90 30 60
+wait 200
+wav tracking-wave-hard.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+spin K1 -100
+spin K2 100
+wait 30
+midi USB 90 30 7f
+wait 200
+wav tracking-note-wave-low.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+midi USB 90 48 7f
+wait 200
+wav tracking-note-wave-high.wav
+wait 1000
+wavstop
+shot test22-pitch-wave.png
+midi USB 80 48 00
+wait 1000
+spin K2 -100
+wait 30
+tap HOME
+spin K2 43
+wait 50
+tap FX
+spin K1 -24
+spin K3 1
+wait 30
+tap HOME
+tap SEL
+tap SEL
+spin K3 48
+wait 30
+midi USB 90 30 20
+wait 200
+wav tracking-cut-soft.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+midi USB 90 30 60
+wait 200
+wav tracking-cut-hard.wav
+wait 1000
+wavstop
+shot test22-velocity-cutoff.png
+midi USB 80 30 00
+wait 1000
+spin K3 -48
+wait 30
+midi USB 90 30 7f
+wait 200
+wav tracking-pitch-low.wav
+wait 1000
+wavstop
+midi USB 80 30 00
+wait 1000
+midi USB 90 3c 7f
+wait 200
+wav tracking-pitch-high-dry.wav
+wait 1000
+wavstop
+midi USB 80 3c 00
+wait 1000
+spin K4 100
+wait 30
+midi USB 90 3c 7f
+wait 200
+wav tracking-pitch-high.wav
+wait 1000
+wavstop
+shot test22-pitch-cutoff.png
+midi USB 80 3c 00
+wait 1000
+spin K1 -100
+spin K2 -100
+spin K3 -24
+spin K4 -200
+wait 30
+shot test22-negative-tracking.png

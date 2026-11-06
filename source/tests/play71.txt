@@ -1,0 +1,33 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1500
+expect tables_ready 1
+expect playing 0
+expect bloom_mode 1
+tap PLAY
+wait 500
+expect playing 1
+expect voices >0
+tap PLAY
+wait 1500
+expect playing 0
+expect voices 0
+tap SEQ
+expect page 27
+spin K1 20
+expect bloom_gate 70
+expect playing 0
+wait 3000
+shot sequencer71.png
+tap PLAY
+wait 100
+expect playing 1
+spin K1 -10
+expect bloom_gate 60
+expect playing 1
+tap HOME
+wait 50
+tap PLAY
+wait 1500
+expect playing 0
+expect voices 0

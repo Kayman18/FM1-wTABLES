@@ -1,0 +1,78 @@
+wait 100
+tap GLO
+tap SEL
+spin K1 -1
+wait 30
+tap HOME
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+spin K4 90
+wait 30
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 -64
+spin K4 -127
+wait 30
+spin K1 90
+spin K2 60
+spin K4 80
+wait 30
+tap SEL
+shot test22-pitch-zero.png
+wav pitch-zero.wav
+midi USB 90 30 7f
+wait 2000
+shot test22-pitch-zero.png
+wavstop
+midi USB 80 30 00
+wait 3500
+spin K1 120
+wait 30
+wav pitch-up.wav
+midi USB 90 30 7f
+wait 2000
+shot test22-pitch-up.png
+wavstop
+midi USB 80 30 00
+wait 3500
+spin K1 -240
+wait 30
+wav pitch-down.wav
+midi USB 90 30 7f
+wait 2000
+shot test22-pitch-down.png
+wavstop
+midi USB 80 30 00
+wait 3500
+spin K1 180
+wait 30
+tap LFO
+spin K1 43
+spin K4 100
+wait 30
+tap HOME
+tap ENV
+tap ENV
+tap SEL
+wav pitch-combined.wav
+midi USB 90 30 7f
+wait 2000
+shot test22-pitch-combined.png
+wavstop
+midi USB 80 30 00
+wait 3500
+key 7 down
+wait 600
+key 11 down
+wait 80
+shot test22-pitch-independent.png
+key 7 up
+key 11 up
+wait 3500

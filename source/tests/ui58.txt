@@ -1,0 +1,16 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+expect voice_limit 6
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+tap GLO
+expect page 23
+spin K1 20
+expect voice_limit 6
+spin K1 -2
+expect voice_limit 4
+spin K1 2
+expect voice_limit 6

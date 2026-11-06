@@ -1,0 +1,23 @@
+wait 900
+tap ARP
+spin K1 7
+tap SEL
+tap SEL
+spin K3 1
+spin K1 11
+wait 100
+shot arp-up-8ve-overlay.png
+spin K1 1
+wait 100
+shot arp-down-8ve-overlay.png
+spin K1 1
+wait 100
+shot arp-alt-8ve-overlay.png
+spin K1 1
+wait 100
+shot arp-alt2-8ve-overlay.png
+wait 900
+shot arp33-page.png
+tap SEL
+wait 900
+shot arp33-chord-return.png

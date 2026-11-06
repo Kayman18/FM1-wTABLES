@@ -1,0 +1,8 @@
+TEST82 SOURCE BASE
+==================
+This source package is derived from:
+  FM1-PolyWavetable-Available-Source-Backup-2026-10-29
+  two_frame_test/source_staging
+
+That staging tree is TEST74-derived and contains the complete editable native/two-frame application source available in the recovery backup.
+The backup did not contain complete TEST75-TEST81 application source. TEST82 therefore branches from the latest complete editable staging source and is not represented as an exact source reconstruction of TEST81.

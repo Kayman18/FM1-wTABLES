@@ -1,0 +1,97 @@
+wait 200
+master 2048
+tap ENV
+spin K1 -127
+spin K2 -127
+spin K3 127
+spin K4 -127
+wait 30
+tap GLO
+tap SEL
+tap SEL
+shot test22-stereo-default.png
+wav stereo-dry.wav
+midi USB 90 30 7f
+wait 4000
+shot test22-stereo-dry.png
+midi USB 80 30 00
+wait 300
+wavstop
+spin K1 1
+wait 50
+wav stereo-chorus1.wav
+midi USB 90 30 7f
+wait 4000
+shot test22-stereo-chorus1.png
+midi USB 80 30 00
+wait 300
+wavstop
+spin K1 1
+wait 50
+wav stereo-chorus2.wav
+midi USB 90 30 7f
+wait 4000
+shot test22-stereo-chorus2.png
+midi USB 80 30 00
+wait 300
+wavstop
+spin K1 -2
+spin K3 1
+spin K4 100
+wait 50
+wav stereo-voice.wav
+midi USB 90 30 7f
+midi USB 90 37 7f
+midi USB 90 3d 7f
+midi USB 90 44 7f
+wait 1500
+shot test22-stereo-voice.png
+midi USB 80 30 00
+midi USB 80 37 00
+midi USB 80 3d 00
+midi USB 80 44 00
+wait 300
+wavstop
+spin K3 1
+spin K4 -200
+wait 50
+wav stereo-pairs.wav
+midi USB 90 30 7f
+midi USB 90 37 7f
+midi USB 90 3d 7f
+midi USB 90 44 7f
+wait 1500
+shot test22-stereo-pairs.png
+midi USB 80 30 00
+midi USB 80 37 00
+midi USB 80 3d 00
+midi USB 80 44 00
+wait 300
+wavstop
+spin K3 1
+spin K4 200
+wait 50
+wav stereo-pitch.wav
+midi USB 90 30 7f
+midi USB 90 37 7f
+midi USB 90 3d 7f
+midi USB 90 44 7f
+wait 1500
+shot test22-stereo-pitch.png
+midi USB 80 30 00
+midi USB 80 37 00
+midi USB 80 3d 00
+midi USB 80 44 00
+wait 300
+wavstop
+spin K3 -3
+wait 50
+wav stereo-restored.wav
+midi USB 90 30 7f
+wait 4000
+shot test22-stereo-restored.png
+midi USB 80 30 00
+wait 300
+wavstop
+tap GLO
+shot test22-main.png

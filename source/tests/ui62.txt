@@ -1,0 +1,43 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1200
+expect voice_limit 6
+expect preset 0
+tap LFO
+expect page 6
+wait 900
+expect overlay_on 0
+tap ARP
+expect page 6
+expect overlay_on 0
+shot test62-arp-button-inactive.png
+spin K1 1
+expect overlay_on 1
+wait 900
+expect overlay_on 1
+shot test62-k1-overlay-after-900ms.png
+wait 600
+expect overlay_on 0
+spin K2 1
+expect overlay_on 1
+wait 900
+expect overlay_on 1
+wait 600
+expect overlay_on 0
+spin K3 1
+expect overlay_on 1
+wait 800
+expect overlay_on 0
+tap SEQ
+expect page 27
+wait 800
+expect overlay_on 0
+spin K3 11
+wait 850
+expect overlay_on 0
+shot test62-sequencer-bpm.png
+spin PRESET 100
+expect preset 33
+expect page 29
+wait 800
+shot test62-last-preset.png

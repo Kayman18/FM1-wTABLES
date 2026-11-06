@@ -1,0 +1,19 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap ARP
+spin K1 6
+tap SEL
+tap SEL
+spin K1 1
+wait 900
+shot arp-up-page.png
+wav arp-up.wav
+midi USB 90 30 7f
+wait 2100
+midi USB 80 30 00
+wait 600
+wavstop

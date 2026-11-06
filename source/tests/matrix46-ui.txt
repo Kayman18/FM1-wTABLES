@@ -1,0 +1,92 @@
+wait 900
+expect play_led 1
+tap LFO
+expect page 6
+tap LFO
+expect page 9
+tap LFO
+expect page 30
+expect matrix_dest 0
+expect matrix_amount 0
+wait 90
+shot matrix46-none.png
+spin K3 1
+expect matrix_dest 1
+spin K4 35
+expect matrix_amount 35
+wait 90
+shot matrix46-route.png
+spin K1 1
+expect matrix_source 5
+expect matrix_dest 0
+spin K3 2
+expect matrix_dest 2
+spin K4 -15
+expect matrix_amount -15
+wait 90
+shot matrix46-two-routes.png
+spin K1 1
+expect matrix_source 9
+expect matrix_dest 0
+spin K1 1
+expect matrix_source 11
+expect matrix_dest 0
+tap LFO
+expect page 6
+tap FX
+expect page 2
+tap FX
+expect page 3
+tap FX
+expect page 5
+tap FX
+expect page 15
+tap FX
+expect page 17
+tap FX
+expect page 16
+tap FX
+expect page 2
+tap GLO
+expect page 13
+tap GLO
+expect page 14
+tap GLO
+expect page 18
+tap GLO
+expect page 22
+tap GLO
+expect page 23
+spin K1 100
+expect voice_limit 6
+spin K2 100
+tap PLAY
+expect playing 1
+expect play_led 0
+tap HOME
+expect play_led 0
+tap PLAY
+expect play_led 1
+spin PRESET 100
+expect preset 14
+expect voice_limit 6
+spin PRESET -12
+expect preset 2
+wait 900
+wait 90
+shot matrix46-koto.png
+tap SEQ
+spin K1 1
+tap PLAY
+expect playing 1
+expect play_led 0
+spin PRESET 3
+expect playing 1
+expect voice_limit 6
+tap LFO
+tap LFO
+tap LFO
+expect page 30
+spin K1 -100
+expect matrix_dest 1
+expect matrix_amount 35

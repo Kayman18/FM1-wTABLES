@@ -1,0 +1,53 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 900
+spin K3 16
+expect bank 16
+wait 500
+shot virus52-first-overlay.png
+wait 800
+shot virus52-first.png
+spin K3 100
+expect bank 27
+wait 500
+shot virus52-last-overlay.png
+wait 800
+shot virus52-last.png
+tap PLAY
+expect playing 1
+spin K3 -12
+expect bank 15
+wait 500
+expect playing 1
+spin K3 1
+expect bank 16
+wait 500
+expect playing 1
+tap GLO
+tap GLO
+expect page 14
+spin K1 -1
+wait 500
+shot virus52-legacy.png
+spin K1 1
+wait 500
+shot virus52-auto.png
+spin PRESET 40
+expect preset 40
+expect bank 16
+wait 100
+shot av52-sub-overlay.png
+wait 800
+shot av52-sub.png
+spin PRESET 6
+expect preset 46
+expect bank 27
+wait 100
+shot av52-glass-overlay.png
+wait 800
+shot av52-glass.png
+spin PRESET 100
+expect preset 51
+expect bank 25
+wait 800
+shot av52-last.png

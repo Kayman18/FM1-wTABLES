@@ -1,0 +1,20 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+tap ARP
+tap SEL
+tap SEL
+spin K1 1
+spin K3 2
+wait 900
+wav range38-arp.wav
+midi USB 90 73 7f
+wait 1498
+midi USB 80 73 00
+wait 500
+wavstop

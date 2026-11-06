@@ -1,0 +1,20 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap ARP
+spin K1 13
+tap SEL
+tap SEL
+spin K1 11
+spin K3 1
+wait 900
+shot five-omit-page.png
+wav five-omit.wav
+midi USB 90 30 7f
+wait 4600
+midi USB 80 30 00
+wait 600
+wavstop

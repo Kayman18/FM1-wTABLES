@@ -1,0 +1,19 @@
+wait 900
+tap ENV
+spin K1 -50
+spin K2 -60
+spin K3 47
+spin K4 -60
+tap HOME
+spin K4 -50
+tap SEQ
+spin K1 1
+tap SEL
+spin K1 3
+wait 900
+wav bloom39-scale-5.wav
+tap PLAY
+wait 8200
+tap PLAY
+wait 500
+wavstop

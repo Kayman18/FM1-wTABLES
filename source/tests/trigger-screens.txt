@@ -1,0 +1,26 @@
+wait 900
+tap ENV
+tap SEL
+tap SEL
+wait 100
+shot trigger-panel-held.png
+spin K1 1
+wait 100
+shot trigger-mode.png
+wait 800
+shot trigger-page.png
+spin K2 30
+wait 100
+shot trigger-amp-sustain.png
+spin K3 -127
+wait 100
+shot trigger-env2-negative.png
+spin K4 -10
+wait 100
+shot trigger-level.png
+tap SEL
+wait 100
+shot trigger-adsr.png
+tap ENV
+wait 100
+shot trigger-env2.png

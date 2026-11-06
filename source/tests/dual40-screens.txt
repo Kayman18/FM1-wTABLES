@@ -1,0 +1,25 @@
+wait 900
+tap GLO
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+tap SEL
+spin K1 4
+spin K2 7
+tap PLAY
+wait 1200
+shot dual40-active.png
+tap REC
+wait 100
+shot dual40-single-overlay.png
+wait 900
+shot dual40-single.png
+tap REC
+wait 100
+shot dual40-dual-overlay.png
+wait 900
+shot dual40-resumed.png
+tap PLAY

@@ -1,0 +1,31 @@
+data data/factory-mips.pwlc 0x97000
+reboot
+wait 1200
+expect voice_limit 6
+shot wave.png
+tap FX
+wait 900
+shot filter.png
+tap FX
+tap FX
+tap FX
+tap FX
+tap FX
+expect page 38
+spin K1 1
+expect delay_sync 1
+spin K2 0
+expect delay_division 2
+wait 900
+shot sync.png
+spin K3 -80
+wait 900
+shot sync-slow.png
+spin K2 1
+wait 900
+shot sync-quarter.png
+spin PRESET 1
+expect delay_sync 1
+expect delay_division 3
+wait 900
+shot preset.png
